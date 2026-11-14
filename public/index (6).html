@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CortenCloud — Bot Cloud Hosting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05080f;
+      --bg2: #0a0f1a;
+      --card: #101828;
+      --card2: #16213a;
+      --card3: #1c2a47;
+      --border: #1e2940;
+      --border2: #2a3a5c;
+      --text: #f2f6fc;
+      --muted: #8b9bb8;
+      --muted2: #5d6b85;
+      --primary: #3b82f6;
+      --primary2: #60a5fa;
+      --primary-d: #2563eb;
+      --accent: #8b5cf6;
+      --accent2: #a78bfa;
+      --cyan: #22d3ee;
+      --success: #22c55e;
+      --success2: #4ade80;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --danger2: #f87171;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 24px 60px rgba(0,0,0,.55);
+      --glow: 0 0 40px rgba(59,130,246,.18);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(59,130,246,.35); }
+    .hidden { display: none !important; }
+    a { color: inherit; text-decoration: none; }
+    code {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      background: rgba(59,130,246,.12); color: var(--primary2);
+      padding: 2px 8px; border-radius: 6px; font-size: .85em;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px; border-radius: 11px; font-weight: 600; font-size: .9rem;
+      border: none; cursor: pointer; text-decoration: none; transition: all .18s ease;
+      font-family: inherit; white-space: nowrap; user-select: none;
+    }
+    .btn:active { transform: translateY(1px) scale(.99); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { color: var(--text); background: rgba(255,255,255,.06); }
+    .btn-outline {
+      background: rgba(255,255,255,.02); color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-outline:hover { border-color: var(--primary); background: rgba(59,130,246,.1); }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      color: #fff; box-shadow: 0 6px 20px rgba(59,130,246,.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(59,130,246,.55); }
+    .btn-success { background: linear-gradient(135deg,#22c55e,#16a34a); color:#fff; box-shadow:0 6px 18px rgba(34,197,94,.35); }
+    .btn-success:hover { transform: translateY(-2px); }
+    .btn-danger { background: linear-gradient(135deg,#ef4444,#dc2626); color:#fff; box-shadow:0 6px 18px rgba(239,68,68,.3); }
+    .btn-danger:hover { transform: translateY(-2px); }
+    .btn-sm { padding: 8px 14px; font-size: .82rem; border-radius: 9px; }
+    .btn-block { width: 100%; }
+
+    /* ===== Top navigation ===== */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      background: rgba(5,8,15,.6);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border-bottom: 1px solid transparent;
+      transition: border-color .25s, background .25s;
+    }
+    .topnav.scrolled { border-bottom-color: var(--border); background: rgba(5,8,15,.82); }
+    .brand {
+      display: flex; align-items: center; gap: 11px;
+      font-weight: 800; font-size: 1.2rem; letter-spacing: -.02em; color: var(--text);
+    }
+    .brand-icon {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem; box-shadow: 0 6px 18px rgba(59,130,246,.4);
+      position: relative; overflow: hidden;
+    }
+    .brand-icon::after {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,.25) 50%, transparent 60%);
+    }
+    .nav-right { display: flex; gap: 10px; align-items: center; }
+
+    /* ===== Language switcher ===== */
+    .lang-switch {
+      display: inline-flex; gap: 2px; padding: 3px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: 999px;
+    }
+    .lang-btn {
+      padding: 5px 12px; border-radius: 999px; border: none; cursor: pointer;
+      background: transparent; color: var(--muted); font-weight: 600; font-size: .78rem;
+      font-family: inherit; transition: all .15s;
+    }
+    .lang-btn:hover { color: var(--text); }
+    .lang-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff; box-shadow: 0 3px 10px rgba(59,130,246,.4);
+    }
+
+    /* ===== Landing ===== */
+    #landing {
+      min-height: 100vh; position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,.22), transparent 60%),
+        radial-gradient(ellipse 50% 50% at 85% 30%, rgba(139,92,246,.14), transparent 60%),
+        radial-gradient(ellipse 40% 50% at 15% 70%, rgba(34,211,238,.08), transparent 60%),
+        var(--bg);
+    }
+    #landing::before {
+      content:''; position:absolute; inset:0; pointer-events:none; opacity:.4;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+    }
+    .hero {
+      position: relative; z-index: 1;
+      padding: 150px 24px 90px; max-width: 1100px; margin: 0 auto; text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 16px; border-radius: 999px;
+      background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.28);
+      color: var(--primary2); font-size: .85rem; font-weight: 500; margin-bottom: 26px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-badge .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--success2);
+      box-shadow: 0 0 10px var(--success2); animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .hero h1 {
+      font-size: clamp(2.3rem, 6vw, 4rem); font-weight: 800;
+      letter-spacing: -.035em; line-height: 1.1; margin-bottom: 22px;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(120deg, #60a5fa 0%, #a78bfa 50%, #22d3ee 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; background-size: 200% auto; animation: shimmer 5s linear infinite;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    .hero p {
+      color: var(--muted); font-size: 1.15rem; max-width: 560px;
+      margin: 0 auto 36px; line-height: 1.65;
+    }
+    .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .hero-cta .btn { padding: 15px 30px; font-size: 1.02rem; }
+    .hero-stats {
+      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+      margin-top: 64px;
+    }
+    .hero-stat .n { font-size: 1.8rem; font-weight: 800; color: var(--text); }
+    .hero-stat .n .grad { background: linear-gradient(135deg,#60a5fa,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero-stat .l { color: var(--muted2); font-size: .82rem; margin-top: 2px; }
+
+    .features {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto; padding: 20px 24px 100px;
+    }
+    .section-title { text-align: center; margin-bottom: 44px; }
+    .section-title h2 { font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 800; margin-bottom: 10px; letter-spacing: -.02em; }
+    .section-title p { color: var(--muted); font-size: 1rem; }
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;
+    }
+    .feature {
+      position: relative; background: linear-gradient(160deg, var(--card), var(--bg2));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 30px 26px; transition: all .25s; overflow: hidden;
+    }
+    .feature::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,.5), transparent);
+      opacity:0; transition: opacity .25s;
+    }
+    .feature:hover { border-color: rgba(59,130,246,.45); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.4); }
+    .feature:hover::before { opacity: 1; }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(139,92,246,.18));
+      border: 1px solid rgba(59,130,246,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 18px;
+    }
+    .feature h3 { font-size: 1.12rem; margin-bottom: 8px; font-weight: 700; }
+    .feature p { color: var(--muted); font-size: .92rem; line-height: 1.6; }
+
+    .pricing { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 20px 24px 100px; }
+    .price-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;
+      align-items: stretch;
+    }
+    .price-card {
+      background: linear-gradient(160deg, var(--card), var(--bg2));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 34px 26px; text-align: center; position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: all .25s;
+    }
+    .price-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+    .price-card.popular {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary), 0 24px 50px rgba(59,130,246,.2);
+      background: linear-gradient(160deg, var(--card3), var(--card));
+    }
+    .price-card.popular::before {
+      content: attr(data-tag); position: absolute; top: 16px; right: -34px;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff;
+      font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+      padding: 5px 40px; transform: rotate(45deg);
+    }
+    .price-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .price-card .amount {
+      font-size: 2.4rem; font-weight: 800; margin: 14px 0 4px;
+      background: linear-gradient(135deg, var(--primary2), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .price-card .unit { color: var(--muted); font-size: .88rem; margin-bottom: 22px; }
+    .price-card ul { list-style: none; text-align: left; margin-bottom: 24px; flex: 1; }
+    .price-card li {
+      padding: 7px 0; font-size: .9rem; color: var(--muted);
+      display: flex; gap: 9px; align-items: center;
+    }
+    .price-card li::before { content: '\2713'; color: var(--success2); font-weight: 700; }
+
+    .footer-land {
+      position: relative; z-index: 1; text-align: center; padding: 36px 24px;
+      border-top: 1px solid var(--border); color: var(--muted2); font-size: .85rem;
+    }
+
+    /* ===== Modal ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      background: linear-gradient(160deg, var(--card), var(--bg2));
+      border: 1px solid var(--border2); border-radius: 22px;
+      padding: 38px 34px; width: 100%; max-width: 420px; box-shadow: var(--shadow);
+      transform: translateY(16px) scale(.98); transition: transform .28s cubic-bezier(.2,.8,.2,1);
+      position: relative; max-height: 92vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+    .modal h2 { font-size: 1.5rem; margin-bottom: 6px; text-align: center; font-weight: 800; }
+    .modal .sub { text-align: center; color: var(--muted); font-size: .9rem; margin-bottom: 26px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block; margin-bottom: 7px; font-size: .85rem; font-weight: 500; color: var(--muted);
+    }
+    .form-control {
+      width: 100%; padding: 12px 15px;
+      background: var(--bg); border: 1px solid var(--border2);
+      border-radius: 11px; color: var(--text); font-size: .95rem;
+      font-family: inherit; transition: all .15s;
+    }
+    .form-control:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.22); background: var(--bg2);
+    }
+    textarea.form-control { resize: vertical; min-height: 90px; }
+    .form-error {
+      color: var(--danger2); font-size: .85rem; text-align: center;
+      min-height: 20px; margin-top: 12px;
+    }
+    .form-switch { text-align: center; margin-top: 20px; font-size: .9rem; color: var(--muted); }
+    .form-switch a { color: var(--primary2); cursor: pointer; font-weight: 600; }
+    .form-switch a:hover { text-decoration: underline; }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 9px;
+      background: rgba(255,255,255,.05); border: none; color: var(--muted);
+      font-size: 1.2rem; cursor: pointer; line-height: 1; transition: all .15s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,.1); color: var(--text); }
+
+    /* ===== App shell ===== */
+    #app { display: none; min-height: 100vh; background: var(--bg); position: relative; }
+    #app::before {
+      content:''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% -5%, rgba(59,130,246,.12), transparent 60%),
+        radial-gradient(ellipse 40% 40% at 90% 100%, rgba(139,92,246,.08), transparent 60%);
+    }
+    .app-nav {
+      position: sticky; top: 0; z-index: 60;
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      background: rgba(5,8,15,.8); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .app-nav-left { display: flex; align-items: center; gap: 12px; }
+    .hamburger {
+      width: 42px; height: 42px; border-radius: 11px; cursor: pointer;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      flex-direction: column; transition: all .18s;
+    }
+    .hamburger:hover { background: rgba(59,130,246,.12); border-color: var(--primary); }
+    .hamburger span {
+      display: block; width: 18px; height: 2px; border-radius: 2px;
+      background: var(--text); transition: all .2s;
+    }
+    .app-nav-right { display: flex; align-items: center; gap: 10px; }
+    .user-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 999px; padding: 5px 14px 5px 5px;
+    }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .9rem; color: #fff;
+    }
+    .user-chip .name { font-size: .88rem; font-weight: 600; line-height: 1.2; }
+    .user-chip .bal { font-size: .75rem; color: var(--muted); line-height: 1.2; }
+
+    /* ===== Drawer ===== */
+    .drawer-bd {
+      position: fixed; inset: 0; z-index: 150;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    .drawer-bd.open { opacity: 1; pointer-events: auto; }
+    .drawer {
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 160;
+      width: 290px; max-width: 85vw;
+      background: linear-gradient(180deg, var(--card), var(--bg2));
+      border-right: 1px solid var(--border);
+      transform: translateX(-100%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
+      display: flex; flex-direction: column; box-shadow: var(--shadow);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head {
+      padding: 20px 22px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-head .brand { font-size: 1.1rem; }
+    .drawer-close {
+      width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
+      background: rgba(255,255,255,.05); border: none; color: var(--muted);
+      font-size: 1.3rem; line-height: 1; transition: all .15s;
+    }
+    .drawer-close:hover { background: rgba(255,255,255,.1); color: var(--text); }
+    .drawer-nav { flex: 1; overflow-y: auto; padding: 14px 12px; }
+    .drawer-nav::-webkit-scrollbar { width: 6px; }
+    .drawer-nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+    .drawer-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 11px; cursor: pointer;
+      color: var(--muted); font-weight: 500; font-size: .92rem;
+      transition: all .15s; margin-bottom: 3px; border: 1px solid transparent;
+    }
+    .drawer-item:hover { background: rgba(59,130,246,.1); color: var(--text); }
+    .drawer-item.active {
+      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(139,92,246,.12));
+      color: var(--text); border-color: rgba(59,130,246,.3);
+    }
+    .drawer-item .ic { font-size: 1.15rem; width: 22px; text-align: center; }
+    .drawer-item .badge-count {
+      margin-left: auto; background: var(--danger); color: #fff;
+      font-size: .68rem; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+    }
+    .drawer-foot { padding: 16px 14px; border-top: 1px solid var(--border); }
+    .drawer-foot .lang-switch { width: 100%; justify-content: center; margin-bottom: 12px; }
+
+    /* ===== App body ===== */
+    .app-body { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 28px 20px 70px; }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .welcome {
+      margin-bottom: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .welcome h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -.02em; }
+    .welcome p { color: var(--muted); font-size: .92rem; }
+    .welcome .clid { color: var(--primary2); }
+
+    .back {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--muted); font-size: .88rem; cursor: pointer;
+      margin-bottom: 18px; font-weight: 600; font-family: inherit;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      padding: 8px 14px; border-radius: 10px; transition: all .15s;
+    }
+    .back:hover { color: var(--text); border-color: var(--primary); background: rgba(59,130,246,.1); transform: translateX(-2px); }
+    .back .arrow { font-size: 1.05rem; }
+
+    .card {
+      background: linear-gradient(160deg, var(--card), var(--bg2));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 26px; margin-bottom: 18px;
+    }
+    .card h2 { font-size: 1.22rem; margin-bottom: 18px; font-weight: 700; display: flex; align-items: center; gap: 9px; }
+    .card .sub-h { font-size: 1.05rem; margin: 24px 0 14px; font-weight: 700; }
+
+    /* ===== Stat cards ===== */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px; margin-bottom: 26px;
+    }
+    .stat-card {
+      background: linear-gradient(160deg, var(--card), var(--bg2));
+      border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px;
+      position: relative; overflow: hidden; transition: all .2s;
+    }
+    .stat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+    .stat-card .label { color: var(--muted); font-size: .78rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .stat-card .label .si { font-size: .95rem; }
+    .stat-card .value { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; }
+    .stat-card .value.blue { color: var(--primary2); }
+    .stat-card .value.green { color: var(--success2); }
+    .stat-card .value.amber { color: var(--warning); }
+    .stat-card .value.purple { color: var(--accent2); }
+
+    /* ===== Quick actions ===== */
+    .quick-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px; margin-bottom: 26px;
+    }
+    .quick-card {
+      background: linear-gradient(135deg, var(--card), var(--card2));
+      border: 1px solid var(--border); border-radius: 14px; padding: 22px 18px;
+      text-align: center; cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
+    }
+    .quick-card::before {
+      content:''; position:absolute; inset:0; opacity:0; transition: opacity .2s;
+      background: radial-gradient(circle at 50% 0%, rgba(59,130,246,.18), transparent 70%);
+    }
+    .quick-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 12px 28px rgba(0,0,0,.35); }
+    .quick-card:hover::before { opacity: 1; }
+    .quick-card .ic { font-size: 1.9rem; margin-bottom: 10px; }
+    .quick-card .lb { font-weight: 600; font-size: .92rem; }
+
+    /* ===== Dashboard grid ===== */
+    .dash-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; margin-bottom: 18px;
+    }
+    @media (max-width: 820px) { .dash-grid { grid-template-columns: 1fr; } }
+
+    /* ===== Activity timeline ===== */
+    .timeline { display: flex; flex-direction: column; gap: 2px; }
+    .tl-item {
+      display: flex; gap: 13px; padding: 11px 0; border-bottom: 1px solid var(--border);
+    }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-dot {
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+      background: rgba(59,130,246,.12); display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .tl-body { flex: 1; min-width: 0; }
+    .tl-body .txt { font-size: .88rem; }
+    .tl-body .time { font-size: .74rem; color: var(--muted2); margin-top: 2px; }
+
+    /* ===== Announcement ===== */
+    .ann-item {
+      padding: 13px 15px; border-radius: 12px; margin-bottom: 10px;
+      background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.2);
+      font-size: .88rem; display: flex; gap: 10px; align-items: flex-start;
+    }
+    .ann-item .ai { font-size: 1.05rem; }
+    .ann-item.warn { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.25); }
+
+    /* ===== Spending chart ===== */
+    .chart-wrap { display: flex; align-items: flex-end; gap: 10px; height: 150px; padding-top: 10px; }
+    .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; height: 100%; justify-content: flex-end; }
+    .chart-bar .bar {
+      width: 100%; max-width: 38px; border-radius: 7px 7px 0 0;
+      background: linear-gradient(180deg, var(--primary2), var(--primary-d));
+      min-height: 3px; transition: height .4s ease; position: relative;
+    }
+    .chart-bar .bar.zero { background: var(--border2); }
+    .chart-bar .lab { font-size: .7rem; color: var(--muted2); }
+    .chart-bar .val { font-size: .68rem; color: var(--muted); }
+
+    /* ===== Table ===== */
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { padding: 13px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,.02); }
+    .badge {
+      display: inline-block; padding: 3px 11px; border-radius: 999px;
+      font-size: .74rem; font-weight: 600;
+    }
+    .badge-active { background: rgba(34,197,94,.15); color: var(--success2); }
+    .badge-pending { background: rgba(245,158,11,.15); color: var(--warning); }
+    .badge-in { background: rgba(34,211,238,.15); color: var(--cyan); }
+    .badge-out { background: rgba(239,68,68,.15); color: var(--danger2); }
+
+    /* ===== Flash ===== */
+    .flash { padding: 12px 15px; border-radius: 11px; margin-top: 14px; font-size: .9rem; display: flex; gap: 9px; align-items: center; }
+    .flash-ok { background: rgba(34,197,94,.12); color: var(--success2); border: 1px solid rgba(34,197,94,.25); }
+    .flash-err { background: rgba(239,68,68,.12); color: var(--danger2); border: 1px solid rgba(239,68,68,.25); }
+    .empty { text-align: center; padding: 44px 20px; color: var(--muted); }
+    .empty .ic { font-size: 2.6rem; margin-bottom: 12px; opacity: .5; }
+
+    /* ===== Settings ===== */
+    .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-row .lab { font-weight: 600; font-size: .95rem; }
+    .setting-row .desc { color: var(--muted); font-size: .82rem; margin-top: 2px; }
+    .danger-zone { border-color: rgba(239,68,68,.3); }
+
+    .kv { display: grid; grid-template-columns: 130px 1fr; gap: 10px 16px; align-items: center; }
+    .kv .k { color: var(--muted); font-size: .88rem; }
+    .kv .v { font-weight: 600; font-size: .92rem; }
+
+    @media (max-width: 600px) {
+      .topnav { padding: 12px 16px; }
+      .hero { padding: 120px 16px 60px; }
+      .hero-stats { gap: 26px; margin-top: 44px; }
+      .app-body { padding: 20px 14px 50px; }
+      .modal { padding: 30px 22px; }
+      .welcome h1 { font-size: 1.4rem; }
+      .nav-right .lang-switch { display: none; }
+      th, td { padding: 10px 6px; font-size: .82rem; }
+      .kv { grid-template-columns: 1fr; gap: 4px; }
+      .kv .k { font-size: .78rem; }
+    }
+
+    /* ===== Chat ===== */
+    .chat-box { display:flex; flex-direction:column; gap:10px; max-height:380px; overflow-y:auto; padding:6px 4px; }
+    .chat-box::-webkit-scrollbar { width:6px; } .chat-box::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+    .chat-msg { max-width:78%; padding:10px 14px; border-radius:14px; font-size:.9rem; word-break:break-word; }
+    .chat-msg.user { align-self:flex-end; background:linear-gradient(135deg,var(--primary),var(--primary-d)); color:#fff; border-bottom-right-radius:4px; }
+    .chat-msg.admin { align-self:flex-start; background:var(--card2); border:1px solid var(--border2); border-bottom-left-radius:4px; }
+    .chat-msg .meta { font-size:.68rem; opacity:.7; margin-top:4px; }
+    .chat-msg.unread { box-shadow:0 0 0 2px rgba(139,92,246,.5); }
+    .chat-input { display:flex; gap:10px; margin-top:14px; }
+    .chat-input .form-control { flex:1; }
+
+    /* ===== Bot view ===== */
+    .bot-head { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+    .bot-head .bt-title { font-size:1.3rem; font-weight:800; }
+    .bot-head .bt-file { font-family:'JetBrains Mono',monospace; color:var(--primary2); }
+    .file-list { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+    .file-item { display:flex; align-items:center; gap:10px; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:9px; font-size:.85rem; }
+    .file-item .fn { font-family:'JetBrains Mono',monospace; color:var(--success2); }
+    .file-add { display:flex; gap:10px; flex-wrap:wrap; }
+    .file-add .form-control { flex:1; min-width:160px; }
+    .console {
+      background:#070b13; border:1px solid var(--border); border-radius:10px; padding:14px;
+      font-family:'JetBrains Mono',monospace; font-size:.78rem; color:#7dd3fc;
+      height:230px; overflow-y:auto; white-space:pre-wrap; word-break:break-word; line-height:1.6;
+    }
+    .console::-webkit-scrollbar { width:6px; } .console::-webkit-scrollbar-thumb { background:#1e3a5f; border-radius:3px; }
+    .console .ok { color:var(--success2); } .console .warn { color:var(--warning); } .console .err { color:var(--danger2); }
+    .console .dim { color:var(--muted2); }
+    .console-btns { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .log-list { display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; }
+    .log-item { font-size:.82rem; padding:6px 10px; border-left:2px solid var(--primary); background:rgba(59,130,246,.06); border-radius:0 6px 6px 0; }
+    .log-item .lt { color:var(--muted2); font-size:.72rem; margin-right:8px; }
+    .bot-info { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:18px; }
+    .bot-info .bi { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+    .bot-info .bi .bk { font-size:.72rem; color:var(--muted2); }
+    .bot-info .bi .bv { font-weight:600; font-size:.9rem; margin-top:2px; }
+
+    /* ===== Admin panel (distinct) ===== */
+    .admin-hero {
+      background:linear-gradient(135deg,rgba(139,92,246,.22),rgba(59,130,246,.12));
+      border:1px solid rgba(139,92,246,.3); border-radius:var(--radius);
+      padding:26px 28px; margin-bottom:18px;
+    }
+    .admin-hero h2 { font-size:1.4rem; font-weight:800; }
+    .admin-hero p { color:var(--muted); font-size:.9rem; margin-top:4px; }
+    .admin-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    @media (max-width:820px){ .admin-grid{ grid-template-columns:1fr; } }
+    .sec { background:linear-gradient(160deg,var(--card),var(--bg2)); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:18px; }
+    .sec.violet { border-color:rgba(139,92,246,.25); }
+    .sec-head { display:flex; align-items:center; gap:9px; font-weight:700; font-size:1.05rem; padding-bottom:14px; margin-bottom:16px; border-bottom:1px solid var(--border); }
+    .sec-head .si { font-size:1.2rem; }
+    .stat-card.violet .value { color:var(--accent2); }
+    .promo-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+    .promo-row:last-child { border-bottom:none; }
+    .promo-row .pc { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--accent2); }
+    .promo-add { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+    .promo-add .form-control { flex:1; min-width:120px; }
+    .conv-card { display:flex; align-items:center; gap:12px; padding:14px; background:var(--bg); border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all .15s; margin-bottom:10px; }
+    .conv-card:hover { border-color:var(--primary); background:var(--card2); }
+    .conv-card .ca { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; }
+    .conv-card .cb { flex:1; min-width:0; }
+    .conv-card .cn { font-weight:600; font-size:.92rem; }
+    .conv-card .cl { font-size:.8rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .conv-card .cu { background:var(--danger); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:999px; }
+    .conv-card.active { border-color:var(--primary); background:var(--card2); }
+    .msg-layout { display:grid; grid-template-columns:240px 1fr; gap:16px; }
+    @media (max-width:720px){ .msg-layout{ grid-template-columns:1fr; } }
+    .conv-list { max-height:480px; overflow-y:auto; }
+  </style>
+</head>
+<body>
+
+<!-- ============ LANDING ============ -->
+<div id="landing">
+  <nav class="topnav" id="topnav">
+    <a href="#" class="brand" onclick="return false">
+      <div class="brand-icon">☁</div>
+      CortenCloud
+    </a>
+    <div class="nav-right">
+      <div class="lang-switch" id="land-lang">
+        <button class="lang-btn" data-lang="uz" onclick="setLang('uz')">UZ</button>
+        <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="btn btn-ghost" data-i18n="nav_login" onclick="openModal('login')">Log in</button>
+      <button class="btn btn-primary" data-i18n="nav_signup" onclick="openModal('register')">Sign up</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge"><span class="dot"></span><span data-i18n="hero_badge"></span></div>
+    <h1><span data-i18n="hero_title_a"></span><span class="grad" data-i18n="hero_title_b"></span><span data-i18n="hero_title_c"></span></h1>
+    <p data-i18n="hero_desc"></p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" data-i18n="hero_cta1" onclick="openModal('register')"></button>
+      <button class="btn btn-outline" data-i18n="hero_cta2" onclick="openModal('login')"></button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="n"><span class="grad">99.9%</span></div><div class="l" data-i18n="hstat_uptime"></div></div>
+      <div class="hero-stat"><div class="n"><span class="grad">24h</span></div><div class="l" data-i18n="hstat_deploy"></div></div>
+      <div class="hero-stat"><div class="n"><span class="grad">3</span></div><div class="l" data-i18n="hstat_langs"></div></div>
+      <div class="hero-stat"><div class="n"><span class="grad">24/7</span></div><div class="l" data-i18n="hstat_support"></div></div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="section-title">
+      <h2 data-i18n="feat_title"></h2>
+      <p data-i18n="feat_sub"></p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature"><div class="feature-icon">🚀</div><h3 data-i18n="feat_fast_t"></h3><p data-i18n="feat_fast_d"></p></div>
+      <div class="feature"><div class="feature-icon">💳</div><h3 data-i18n="feat_pay_t"></h3><p data-i18n="feat_pay_d"></p></div>
+      <div class="feature"><div class="feature-icon">🎟</div><h3 data-i18n="feat_promo_t"></h3><p data-i18n="feat_promo_d"></p></div>
+      <div class="feature"><div class="feature-icon">🛡</div><h3 data-i18n="feat_secure_t"></h3><p data-i18n="feat_secure_d"></p></div>
+      <div class="feature"><div class="feature-icon">📈</div><h3 data-i18n="feat_scale_t"></h3><p data-i18n="feat_scale_d"></p></div>
+      <div class="feature"><div class="feature-icon">💬</div><h3 data-i18n="feat_support_t"></h3><p data-i18n="feat_support_d"></p></div>
+    </div>
+  </section>
+
+  <section class="pricing">
+    <div class="section-title">
+      <h2 data-i18n="price_title"></h2>
+      <p data-i18n="price_sub"></p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3 data-i18n="plan_daily"></h3>
+        <div class="amount">400</div>
+        <div class="unit" data-i18n="plan_daily_unit"></div>
+        <ul>
+          <li data-i18n="plan_feat_flex"></li>
+          <li data-i18n="plan_feat_range"></li>
+          <li data-i18n="plan_feat_full"></li>
+        </ul>
+        <button class="btn btn-outline btn-block" data-i18n="plan_choose" onclick="openModal('register')"></button>
+      </div>
+      <div class="price-card popular" data-tag="POPULAR" id="popular-tag">
+        <h3 data-i18n="plan_monthly"></h3>
+        <div class="amount">4 900</div>
+        <div class="unit" data-i18n="plan_monthly_unit"></div>
+        <ul>
+          <li data-i18n="plan_feat_m30"></li>
+          <li data-i18n="plan_feat_upd"></li>
+          <li data-i18n="plan_feat_prio"></li>
+        </ul>
+        <button class="btn btn-primary btn-block" data-i18n="plan_choose" onclick="openModal('register')"></button>
+      </div>
+      <div class="price-card">
+        <h3 data-i18n="plan_yearly"></h3>
+        <div class="amount">64 000</div>
+        <div class="unit" data-i18n="plan_yearly_unit"></div>
+        <ul>
+          <li data-i18n="plan_feat_year"></li>
+          <li data-i18n="plan_feat_best"></li>
+          <li data-i18n="plan_feat_vip"></li>
+        </ul>
+        <button class="btn btn-outline btn-block" data-i18n="plan_choose" onclick="openModal('register')"></button>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-land" data-i18n="footer"></div>
+</div>
+
+<!-- ============ LOGIN MODAL ============ -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModals()">×</button>
+    <h2 data-i18n="m_login_t"></h2>
+    <p class="sub" data-i18n="m_login_s"></p>
+    <div class="form-group">
+      <label data-i18n="f_nick"></label>
+      <input class="form-control" id="login-nick" data-i18n-ph="f_nick_ph" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label data-i18n="f_pass"></label>
+      <input class="form-control" type="password" id="login-pass" data-i18n-ph="f_pass_ph" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary btn-block" data-i18n="f_login_btn" onclick="doLogin()"></button>
+    <div class="form-error" id="login-err"></div>
+    <p class="form-switch"><span data-i18n="f_noaccount"></span> <a data-i18n="f_sw_reg" onclick="switchModal('register')"></a></p>
+  </div>
+</div>
+
+<!-- ============ REGISTER MODAL ============ -->
+<div class="modal-overlay" id="modal-register">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModals()">×</button>
+    <h2 data-i18n="m_reg_t"></h2>
+    <p class="sub" data-i18n="m_reg_s"></p>
+    <div class="form-group">
+      <label data-i18n="f_nick"></label>
+      <input class="form-control" id="reg-nick" data-i18n-ph="f_nick_ph" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label data-i18n="f_email"></label>
+      <input class="form-control" type="email" id="reg-email" data-i18n-ph="f_email_ph" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label data-i18n="f_pass"></label>
+      <input class="form-control" type="password" id="reg-pass" data-i18n-ph="f_pass_ph" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label data-i18n="f_pass2"></label>
+      <input class="form-control" type="password" id="reg-pass2" data-i18n-ph="f_pass2_ph" autocomplete="new-password">
+    </div>
+    <button class="btn btn-primary btn-block" data-i18n="f_reg_btn" onclick="doRegister()"></button>
+    <div class="form-error" id="reg-err"></div>
+    <p class="form-switch"><span data-i18n="f_haveaccount"></span> <a data-i18n="f_sw_login" onclick="switchModal('login')"></a></p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <nav class="app-nav">
+    <div class="app-nav-left">
+      <button class="hamburger" onclick="openDrawer()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="#" class="brand" onclick="showPage('dash');return false">
+        <div class="brand-icon">☁</div>
+        CortenCloud
+      </a>
+    </div>
+    <div class="app-nav-right">
+      <div class="user-chip">
+        <div class="avatar" id="nav-avatar">A</div>
+        <div>
+          <div class="name" id="nav-name">—</div>
+          <div class="bal" id="nav-bal">0</div>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" data-i18n="nav_logout" onclick="doLogout()"></button>
+    </div>
+  </nav>
+
+  <div class="app-body">
+    <!-- DASHBOARD -->
+    <div id="page-dash" class="page active">
+      <div class="welcome">
+        <div>
+          <h1 id="welcome-text"></h1>
+          <p><span data-i18n="clientid"></span>: <code class="clid" id="welcome-id">—</code></p>
+        </div>
+      </div>
+
+      <div class="stat-row" id="dash-stats"></div>
+
+      <div class="quick-row" id="dash-quick"></div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <h2 id="dash-h1">📊</h2>
+          <div class="chart-wrap" id="dash-chart"></div>
+        </div>
+        <div class="card">
+          <h2 id="dash-h2">📣</h2>
+          <div id="dash-ann"></div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <h2 id="dash-h3">🕒</h2>
+          <div class="timeline" id="dash-activity"></div>
+        </div>
+        <div class="card">
+          <h2 id="dash-h4">🤖</h2>
+          <div id="dash-bots"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="page-profile" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>👤 <span data-i18n="p_profile_t"></span></h2>
+        <div class="kv">
+          <div class="k" data-i18n="p_profile_nick"></div><div class="v" id="pf-nick"></div>
+          <div class="k" data-i18n="p_profile_email"></div><div class="v" id="pf-email"></div>
+          <div class="k" data-i18n="p_profile_id"></div><div class="v"><code id="pf-id"></code></div>
+          <div class="k" data-i18n="p_profile_bal"></div><div class="v" id="pf-bal"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BALANCE -->
+    <div id="page-balance" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>💰 <span data-i18n="p_balance_t"></span></h2>
+        <p style="font-size:2.1rem;font-weight:800;color:var(--primary2);margin-bottom:8px" id="bal-val">0</p>
+        <p style="color:var(--muted);font-size:.88rem;margin-bottom:22px" data-i18n="p_balance_rates"></p>
+        <div class="sub-h">💳 <span data-i18n="p_balance_topup"></span></div>
+        <p style="color:var(--muted);font-size:.88rem;margin-bottom:12px"><span data-i18n="p_balance_card"></span>: <code id="card-show">—</code></p>
+        <div class="form-group" style="max-width:340px">
+          <label data-i18n="p_balance_amount"></label>
+          <input class="form-control" type="number" id="topup-amt" placeholder="50000" min="5000">
+        </div>
+        <button class="btn btn-primary" style="width:auto" data-i18n="p_balance_btn" onclick="doTopup()"></button>
+        <div id="topup-msg"></div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="page-upload" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>🚀 <span data-i18n="p_upload_t"></span></h2>
+        <div class="form-group">
+          <label data-i18n="p_upload_plan"></label>
+          <select class="form-control" id="up-plan">
+            <option value="monthly"></option>
+            <option value="yearly"></option>
+            <option value="daily"></option>
+          </select>
+        </div>
+        <div class="form-group" id="days-wrap" style="display:none">
+          <label data-i18n="p_upload_days"></label>
+          <input class="form-control" type="number" id="up-days" value="7" min="1" max="365">
+        </div>
+        <div class="form-group">
+          <label data-i18n="p_upload_promo"></label>
+          <input class="form-control" id="up-promo" placeholder="YANGI20">
+        </div>
+        <div class="form-group">
+          <label data-i18n="p_upload_file"></label>
+          <input class="form-control" id="up-file" placeholder="my_bot.py">
+        </div>
+        <button class="btn btn-primary" style="width:auto" data-i18n="p_upload_btn" onclick="doUpload()"></button>
+        <div id="up-msg"></div>
+      </div>
+    </div>
+
+    <!-- MY BOTS -->
+    <div id="page-mybots" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>📂 <span data-i18n="p_mybots_t"></span></h2>
+        <div id="bots-box"></div>
+      </div>
+    </div>
+
+    <!-- PROMO -->
+    <div id="page-promo" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>🎟 <span data-i18n="p_promo_t"></span></h2>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:18px" data-i18n="p_promo_desc"></p>
+        <div class="form-group" style="max-width:340px">
+          <label data-i18n="p_promo_code"></label>
+          <input class="form-control" id="promo-code" placeholder="YANGI20" style="text-transform:uppercase">
+        </div>
+        <button class="btn btn-primary" style="width:auto" data-i18n="p_promo_apply" onclick="doPromo()"></button>
+        <div id="promo-msg"></div>
+        <div class="sub-h">🎁 <span data-i18n="p_promo_list"></span></div>
+        <div id="promo-list"></div>
+      </div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div id="page-tx" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>📋 <span data-i18n="p_tx_t"></span></h2>
+        <div id="tx-box"></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div id="page-activity" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>📊 <span data-i18n="p_activity_t"></span></h2>
+        <div class="timeline" id="activity-box"></div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="page-notif" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>🔔 <span data-i18n="p_notif_t"></span></h2>
+        <button class="btn btn-outline btn-sm" style="margin-bottom:16px" data-i18n="p_notif_read" onclick="markAllRead()"></button>
+        <div id="notif-box"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>⚙ <span data-i18n="p_settings_t"></span></h2>
+        <div class="setting-row">
+          <div>
+            <div class="lab" data-i18n="p_settings_lang"></div>
+            <div class="desc">UZ · RU · EN</div>
+          </div>
+          <div class="lang-switch">
+            <button class="lang-btn" data-lang="uz" onclick="setLang('uz')">UZ</button>
+            <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+            <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+          </div>
+        </div>
+      </div>
+      <div class="card danger-zone">
+        <h2 style="color:var(--danger2)">⚠ <span data-i18n="p_settings_danger"></span></h2>
+        <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px" data-i18n="p_settings_del_desc"></p>
+        <button class="btn btn-danger" style="width:auto" data-i18n="p_settings_del" onclick="deleteAccount()"></button>
+      </div>
+    </div>
+
+    <!-- CONTACT (chat with admin) -->
+    <div id="page-contact" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>💬 <span data-i18n="chat_with_admin"></span></h2>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+          <input class="form-control" id="contact-text" data-i18n-ph="chat_ph" onkeypress="if(event.key==='Enter')doContact()">
+          <button class="btn btn-primary" data-i18n="chat_send" onclick="doContact()"></button>
+        </div>
+        <div id="contact-msg"></div>
+      </div>
+    </div>
+
+    <!-- BOT VIEW -->
+    <div id="page-botview" class="page">
+      <button class="back" onclick="showPage('mybots')"><span class="arrow">←</span> <span data-i18n="p_mybots_t"></span></button>
+      <div class="card">
+        <div class="bot-head"><div class="bt-title" id="bv-title">—</div></div>
+        <div class="bot-info" id="bv-info"></div>
+        <div class="sub-h">📁 <span data-i18n="p_botview_files"></span></div>
+        <div class="file-list" id="bv-files"></div>
+        <div class="file-add">
+          <input class="form-control" id="bv-file-input" data-i18n-ph="p_botview_filename">
+          <button class="btn btn-success" data-i18n="p_botview_addbtn" onclick="addBotFile()"></button>
+        </div>
+        <div id="bv-file-msg"></div>
+        <div class="sub-h" style="margin-top:24px">🖥 <span data-i18n="p_botview_console"></span></div>
+        <div class="console" id="bv-console"></div>
+        <div class="console-btns">
+          <button class="btn btn-success btn-sm" data-i18n="p_botview_run" onclick="runBot()"></button>
+          <button class="btn btn-danger btn-sm" data-i18n="p_botview_stop" onclick="stopBot()"></button>
+          <button class="btn btn-outline btn-sm" data-i18n="p_botview_clear" onclick="clearConsole()"></button>
+        </div>
+        <div class="sub-h" style="margin-top:24px">📜 <span data-i18n="p_botview_logs"></span></div>
+        <div class="log-list" id="bv-logs"></div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div id="page-messages" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="card">
+        <h2>💬 <span data-i18n="p_messages_t"></span></h2>
+        <div id="messages-box"></div>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL (distinct design) -->
+    <div id="page-admin" class="page">
+      <button class="back" onclick="showPage('dash')"><span class="arrow">←</span> <span data-i18n="back"></span></button>
+      <div class="admin-hero">
+        <h2>🛠 <span data-i18n="p_admin_t"></span></h2>
+        <p data-i18n="p_admin_dash_desc"></p>
+        <div class="stat-row" style="margin-top:18px;margin-bottom:0">
+          <div class="stat-card violet"><div class="label">👥 <span data-i18n="p_admin_users"></span></div><div class="value" id="ad-users">0</div></div>
+          <div class="stat-card"><div class="label">🤖 <span data-i18n="p_admin_bots"></span></div><div class="value" id="ad-bots">0</div></div>
+          <div class="stat-card"><div class="label">💎 <span data-i18n="p_admin_earned"></span></div><div class="value blue" id="ad-earned">0</div></div>
+          <div class="stat-card violet"><div class="label">📥 <span data-i18n="p_admin_pending_files"></span></div><div class="value" id="ad-fr-pending">0</div></div>
+          <div class="stat-card"><div class="label">💬 <span data-i18n="p_admin_unread_msgs"></span></div><div class="value" id="ad-unread-msgs">0</div></div>
+        </div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="sec violet">
+          <div class="sec-head"><span class="si">🎟</span> <span data-i18n="p_admin_promos"></span></div>
+          <div class="promo-add">
+            <input class="form-control" id="ad-promo-code" placeholder="YANGI20" style="text-transform:uppercase">
+            <input class="form-control" id="ad-promo-amount" type="number" placeholder="5000" style="max-width:120px">
+            <button class="btn btn-primary btn-sm" data-i18n="p_admin_promo_add" onclick="addPromo()"></button>
+          </div>
+          <div id="ad-promo-msg"></div>
+          <div id="ad-promo-list"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-head"><span class="si">💳</span> <span data-i18n="p_admin_card"></span></div>
+          <div class="form-group">
+            <input class="form-control" id="ad-card" value="8600 1234 5678 9012">
+          </div>
+          <button class="btn btn-primary btn-sm" style="width:auto" data-i18n="p_admin_save" onclick="saveCard()"></button>
+          <div id="ad-msg"></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="si">📥</span> <span data-i18n="p_admin_filereqs"></span></div>
+        <div id="ad-fr-box"></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="si">📂</span> <span data-i18n="p_admin_allbots"></span></div>
+        <div id="ad-bots-box"></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="si">👥</span> <span data-i18n="p_admin_allusers"></span></div>
+        <div id="ad-users-box"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DRAWER ============ -->
+<div class="drawer-bd" id="drawer-bd" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <a href="#" class="brand" onclick="showPage('dash');closeDrawer();return false">
+      <div class="brand-icon">☁</div> CortenCloud
+    </a>
+    <button class="drawer-close" onclick="closeDrawer()">×</button>
+  </div>
+  <nav class="drawer-nav" id="drawer-nav"></nav>
+  <div class="drawer-foot">
+    <div class="lang-switch">
+      <button class="lang-btn" data-lang="uz" onclick="setLang('uz')">UZ</button>
+      <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="btn btn-outline btn-block" data-i18n="nav_logout" onclick="doLogout()"></button>
+  </div>
+</aside>
+
+<script>
+/* ============================================================
+   TRANSLATIONS  (UZ / RU / EN)
+   ============================================================ */
+const I18N = {
+  uz: {
+    nav_login:"Kirish", nav_signup:"Ro'yxat", nav_logout:"Chiqish",
+    hero_badge:"Telegram botlaringiz uchun cloud hosting",
+    hero_title_a:"Botlaringizni ", hero_title_b:"cloudga", hero_title_c:" tez va oson joylashtiring",
+    hero_desc:"Oylik, yillik yoki kunlik tarif. Balans orqali to'lov. Bir necha daqiqada botingiz ishga tushadi.",
+    hero_cta1:"Boshlash — bepul ro'yxat", hero_cta2:"Hisobim bor",
+    hstat_uptime:"Ishlash vaqti", hstat_deploy:"Joylash tezligi", hstat_langs:"Til", hstat_support:"Qo'llab-quvvatlash",
+    feat_title:"Nega CortenCloud?", feat_sub:"Hammasi bir joyda — joylash, to'lov, boshqaruv",
+    feat_fast_t:"Tez joylash", feat_fast_d:"Faylni yuklang — admin 24 soat ichida ishga tushiradi. .py, .zip, .rar qabul qilinadi.",
+    feat_pay_t:"Qulay to'lov", feat_pay_d:"Balansni karta orqali to'ldiring. Oylik, yillik yoki kunlik tarifni tanlang.",
+    feat_promo_t:"Promokodlar", feat_promo_d:"Chegirma kodlari bilan balansingizni bepul to'ldiring.",
+    feat_secure_t:"Xavfsiz", feat_secure_d:"Har bir mijozga alohida ID. Admin panel orqali to'liq nazorat.",
+    feat_scale_t:"Kengaytiriladigan", feat_scale_d:"Botlar soni cheklovsiz. Har bir bot alohida kuzatiladi.",
+    feat_support_t:"24/7 qo'llab-quvvatlash", feat_support_d:"Admin bilan to'g'ridan-to'g'ri muloqot va tez javob.",
+    price_title:"Tariflar", price_sub:"O'zingizga mos muddatni tanlang",
+    plan_daily:"Kunlik", plan_monthly:"Oylik", plan_yearly:"Yillik",
+    plan_daily_unit:"so'm / kun", plan_monthly_unit:"so'm / 30 kun", plan_yearly_unit:"so'm / 365 kun",
+    plan_feat_flex:"Moslashuvchan muddat", plan_feat_range:"1–365 kun", plan_feat_full:"To'liq qo'llab-quvvatlash",
+    plan_feat_m30:"30 kunlik hosting", plan_feat_upd:"Fayl yangilash bepul", plan_feat_prio:"Prioritet qo'llab-quvvatlash",
+    plan_feat_year:"1 yil to'liq", plan_feat_best:"Eng foydali narx", plan_feat_vip:"VIP qo'llab-quvvatlash",
+    plan_choose:"Tanlash", plan_popular:"Mashhur",
+    footer:"© 2026 CortenCloud · Botlarni cloudga joylashtirish xizmati",
+    m_login_t:"Xush kelibsiz", m_login_s:"Hisobingizga kiring",
+    m_reg_t:"Ro'yxatdan o'tish", m_reg_s:"Bir daqiqada hisob yarating",
+    f_nick:"Nick", f_email:"Email", f_pass:"Parol", f_pass2:"Parolni tasdiqlang",
+    f_nick_ph:"masalan: ali_dev", f_email_ph:"ali@example.com", f_pass_ph:"kamida 6 belgi", f_pass2_ph:"qayta kiriting",
+    f_login_btn:"Kirish", f_reg_btn:"Ro'yxatdan o'tish",
+    f_noaccount:"Hisobingiz yo'qmi?", f_haveaccount:"Allaqachon hisobingiz bormi?",
+    f_sw_reg:"Ro'yxatdan o'ting", f_sw_login:"Kirish",
+    err_nickshort:"Nick kamida 3 belgi", err_email:"Email noto'g'ri", err_passshort:"Parol kamida 6 belgi",
+    err_passmatch:"Parollar mos kelmadi", err_nicktaken:"Bu nick band", err_emailtaken:"Bu email band",
+    err_empty:"Nick va parol kiriting", err_wrong:"Nick yoki parol noto'g'ri",
+    welcome:"Salom", clientid:"Mijoz ID",
+    quick_actions:"Tezkor amallar", recent_activity:"So'nggi faollik", active_bots:"Faol botlar",
+    announcements:"E'lonlar", spending_chart:"Sarflash (so'm)",
+    stat_balance:"Balans", stat_bots:"Botlarim", stat_active:"Faol", stat_pending:"Kutilmoqda",
+    stat_spent:"Jami sarflash", stat_monthly:"Oylik narx",
+    menu_dash:"Bosh sahifa", menu_profile:"Profil", menu_balance:"Balans", menu_upload:"Bot joylash",
+    menu_mybots:"Mening botlarim", menu_promo:"Promokodlar", menu_tx:"Operatsiyalar", menu_activity:"Faollik",
+    menu_notif:"Bildirishnomalar", menu_settings:"Sozlamalar", menu_contact:"Admin aloqa", menu_admin:"Admin panel",
+    back:"Bosh menyu",
+    p_profile_t:"Profil", p_profile_nick:"Nick", p_profile_email:"Email", p_profile_id:"Mijoz ID", p_profile_bal:"Balans",
+    p_balance_t:"Balans", p_balance_card:"Karta", p_balance_topup:"To'ldirish", p_balance_amount:"Summa (min 5 000)",
+    p_balance_btn:"To'ldirish", p_balance_rates:"Oylik 4 900 · Yillik 64 000 · Kunlik 400 so'm/kun",
+    p_upload_t:"Bot joylash", p_upload_plan:"Tarif", p_upload_days:"Kunlar", p_upload_promo:"Promokod (ixtiyoriy)",
+    p_upload_file:"Fayl nomi (.py / .zip / .rar)", p_upload_btn:"Yuklash va to'lov",
+    p_mybots_t:"Mening botlarim", p_mybots_empty:"Hali bot yo'q", p_mybots_deploy:"Bot joylash",
+    p_mybots_file:"Fayl", p_mybots_plan:"Tarif", p_mybots_price:"Narx", p_mybots_status:"Holat", p_mybots_actions:"Amal", p_mybots_delete:"O'chirish",
+    p_promo_t:"Promokodlar", p_promo_desc:"Chegirma kodini kiriting — balansingizga bonus qo'shiladi.",
+    p_promo_code:"Promokod", p_promo_apply:"Qo'llash", p_promo_list:"Mavjud kodlar", p_promo_used:"Ishlatilgan",
+    p_tx_t:"Operatsiyalar tarixi", p_tx_empty:"Operatsiyalar yo'q",
+    p_tx_date:"Sana", p_tx_desc:"Tavsif", p_tx_amount:"Summa", p_tx_type:"Tur",
+    p_activity_t:"Faollik jurnali", p_activity_empty:"Hozircha faollik yo'q",
+    p_notif_t:"Bildirishnomalar", p_notif_empty:"Bildirishnoma yo'q", p_notif_read:"Hammasini o'qildi deb belgilash",
+    p_settings_t:"Sozlamalar", p_settings_lang:"Til", p_settings_danger:"Xavfli zona",
+    p_settings_del:"Hisobni o'chirish", p_settings_del_desc:"Hisobingiz va barcha ma'lumotlar butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.",
+    p_contact_t:"Admin bilan aloqa", p_contact_ph:"Savolingiz yoki muammoingiz...",
+    p_contact_send:"Yuborish", p_contact_hist:"Tarix", p_contact_empty:"Tarix bo'sh",
+    p_admin_t:"Admin panel", p_admin_users:"Foydalanuvchilar", p_admin_bots:"Botlar", p_admin_earned:"Daromad",
+    p_admin_card:"Karta raqami", p_admin_save:"Saqlash", p_admin_allbots:"Barcha botlar",
+    p_admin_approve:"Tasdiqlash", p_admin_nobots:"Botlar yo'q", p_admin_user:"Foydalanuvchi", p_admin_file:"Fayl", p_admin_status:"Holat",
+    status_active:"Faol", status_pending:"Kutilmoqda",
+    planname_daily:"Kunlik", planname_monthly:"Oylik", planname_yearly:"Yillik",
+    tx_topup:"Balans to'ldirish", tx_deploy:"Bot joylash", tx_promo:"Promokod bonusi",
+    msg_topup_ok:"so'm qo'shildi", msg_topup_min:"Minimal 5 000 so'm",
+    msg_upload_ok:"Yuklandi! ", msg_upload_needfile:"Fayl nomini yozing",
+    msg_upload_nobalance:"Balans yetarli emas (", msg_upload_after:" so'm kerak)",
+    msg_contact_ok:"Yuborildi!", msg_contact_empty:"Xabar yozing",
+    msg_promo_ok:"Bonus qo'shildi: +", msg_promo_invalid:"Promokod noto'g'ri yoki ishlatilgan",
+    msg_card_saved:"Saqlandi", msg_notif_read:"Hammasi o'qildi deb belgilandi", msg_acct_deleted:"Hisob o'chirildi",
+    you:"Siz", admin_lbl:"Admin", som:"so'm", days_word:"kun",
+    ann1:"Yangi: Yillik tarifda eng foydali narx!", ann2:"Dushanba 02:00 texnik ishlar bo'lishi mumkin.",
+    ann3:"Promokod YANGI20 — balansga +5000 bonus.",
+    act_login:"Tizimga kirdi", act_register:"Hisob yaratildi", act_topup:"Balans +{amount} so'm",
+    act_deploy:"Bot joylandi: {file}", act_promo:"Promokod ishlatildi (+{amount})",
+    act_delbot:"Bot o'chirildi: {file}", act_contact:"Adminga xabar yuborildi", act_notif:"Bildirishnomalar o'qildi",
+    menu_messages:"Habarlar",
+    p_messages_t:"Habarlar", p_messages_empty:"Habarlar yo'q", p_messages_unread:"o'qilmagan",
+    p_messages_admin:"Admin", p_messages_open:"Ochish", p_messages_none:"Suhbat yo'q", p_messages_select:"Mijozni tanlang",
+    chat_ph:"Xabar yozing...", chat_send:"Yuborish", chat_empty:"Hali xabar yo'q. Savolingizni yozing!",
+    chat_with_admin:"Admin bilan muloqot", chat_admin_replied:"Admin javob berdi",
+    p_botview_files:"Fayllar", p_botview_addfile:"Fayl qo'shish", p_botview_filename:"Fayl nomi (.py/.zip/.rar)",
+    p_botview_addbtn:"Qo'shish", p_botview_console:"Console", p_botview_run:"Ishga tushirish",
+    p_botview_stop:"To'xtatish", p_botview_clear:"Tozalash", p_botview_logs:"Loglar",
+    p_botview_nofiles:"Fayl yo'q", p_botview_created:"Yaratilgan", p_botview_plan:"Tarif",
+    p_botview_status:"Holat", p_botview_notfound:"Bot topilmadi",
+    msg_file_added:"Fayl qo'shildi va adminga yuborildi", msg_file_needname:"Fayl nomini yozing",
+    console_started:"Bot ishga tushdi", console_stopped:"Bot to'xtatildi",
+    console_cleared:"Console tozalandi", console_running:"Bot ishlamoqda...", console_ready:"Tayyor. Ishga tushirish tugmasini bosing.",
+    p_admin_overview:"Umumiy ko'rinish", p_admin_pending_files:"Fayl so'rovlari",
+    p_admin_unread_msgs:"O'qilmagan xabarlar", p_admin_filereqs:"Fayl so'rovlari",
+    p_admin_fr_none:"So'rovlar yo'q", p_admin_fr_owner:"Egasi", p_admin_fr_bot:"Bot",
+    p_admin_fr_file:"Fayl", p_admin_fr_date:"Sana", p_admin_fr_status:"Holat",
+    p_admin_promos:"Promokodlar boshqaruvi", p_admin_promo_new:"Yangi promokod",
+    p_admin_promo_code:"Kod", p_admin_promo_amount:"Bonus (so'm)",
+    p_admin_promo_add:"Qo'shish", p_admin_promo_delete:"O'chirish", p_admin_promo_none:"Promokodlar yo'q",
+    p_admin_allusers:"Barcha foydalanuvchilar",
+    msg_promo_added:"Promokod qo'shildi", msg_promo_deleted:"Promokod o'chirildi", msg_fr_approved:"Fayl tasdiqlandi",
+    fr_pending:"Kutilmoqda", fr_done:"Tasdiqlangan",
+    p_admin_msgs_t:"Mijozlar bilan muloqot", p_admin_msgs_none:"Xabarlar yo'q",
+    p_admin_msgs_reply_ph:"Javob yozing...", p_admin_msgs_reply_btn:"Javob berish",
+    log_created:"Bot yaratildi", log_file_added:"Fayl qo'shildi: {file}",
+    log_started:"Ishga tushirildi", log_stopped:"To'xtatildi", log_cleared:"Console tozalandi",
+    act_file_added:"Botga fayl qo'shildi: {file}", act_bot_run:"Bot ishga tushirildi: {file}",
+    act_bot_stop:"Bot to'xtatildi: {file}", act_admin_reply:"Admin javob berdi",
+    act_promo_create:"Promokod yaratildi: {code}", act_fr_approve:"Fayl so'rovi tasdiqlandi",
+    admin_welcome:"Admin paneli", p_admin_dash_desc:"Tizimni boshqaring: mijozlar, botlar, promokodlar va fayl so'rovlari"
+  },
+  ru: {
+    nav_login:"Войти", nav_signup:"Регистрация", nav_logout:"Выйти",
+    hero_badge:"Облачный хостинг для Telegram-ботов",
+    hero_title_a:"Разверните ботов в ", hero_title_b:"облаке", hero_title_c:" быстро и просто",
+    hero_desc:"Месячный, годовой или дневной тариф. Оплата с баланса. Бот запустится за несколько минут.",
+    hero_cta1:"Начать — бесплатная регистрация", hero_cta2:"У меня есть аккаунт",
+    hstat_uptime:"Аптайм", hstat_deploy:"Скорость развёртывания", hstat_langs:"Язык", hstat_support:"Поддержка",
+    feat_title:"Почему CortenCloud?", feat_sub:"Всё в одном — развёртывание, оплата, управление",
+    feat_fast_t:"Быстрое развёртывание", feat_fast_d:"Загрузите файл — администратор запустит за 24 часа. Поддерживаются .py, .zip, .rar.",
+    feat_pay_t:"Удобная оплата", feat_pay_d:"Пополните баланс картой. Выберите месячный, годовой или дневной тариф.",
+    feat_promo_t:"Промокоды", feat_promo_d:"Пополняйте баланс бесплатно с помощью промокодов.",
+    feat_secure_t:"Безопасно", feat_secure_d:"У каждого клиента свой ID. Полный контроль через админ-панель.",
+    feat_scale_t:"Масштабируемо", feat_scale_d:"Количество ботов без ограничений. Каждый бот отслеживается отдельно.",
+    feat_support_t:"Поддержка 24/7", feat_support_d:"Прямое общение с администратором и быстрый ответ.",
+    price_title:"Тарифы", price_sub:"Выберите подходящий срок",
+    plan_daily:"Дневной", plan_monthly:"Месячный", plan_yearly:"Годовой",
+    plan_daily_unit:"сум / день", plan_monthly_unit:"сум / 30 дней", plan_yearly_unit:"сум / 365 дней",
+    plan_feat_flex:"Гибкий срок", plan_feat_range:"1–365 дней", plan_feat_full:"Полная поддержка",
+    plan_feat_m30:"Хостинг на 30 дней", plan_feat_upd:"Обновление файла бесплатно", plan_feat_prio:"Приоритетная поддержка",
+    plan_feat_year:"Полный год", plan_feat_best:"Лучшая цена", plan_feat_vip:"VIP-поддержка",
+    plan_choose:"Выбрать", plan_popular:"Популярный",
+    footer:"© 2026 CortenCloud · Сервис размещения ботов в облаке",
+    m_login_t:"Добро пожаловать", m_login_s:"Войдите в аккаунт",
+    m_reg_t:"Регистрация", m_reg_s:"Создайте аккаунт за минуту",
+    f_nick:"Ник", f_email:"Email", f_pass:"Пароль", f_pass2:"Подтвердите пароль",
+    f_nick_ph:"например: ali_dev", f_email_ph:"ali@example.com", f_pass_ph:"минимум 6 символов", f_pass2_ph:"введите снова",
+    f_login_btn:"Войти", f_reg_btn:"Зарегистрироваться",
+    f_noaccount:"Нет аккаунта?", f_haveaccount:"Уже есть аккаунт?",
+    f_sw_reg:"Зарегистрироваться", f_sw_login:"Войти",
+    err_nickshort:"Ник минимум 3 символа", err_email:"Неверный email", err_passshort:"Пароль минимум 6 символов",
+    err_passmatch:"Пароли не совпадают", err_nicktaken:"Этот ник занят", err_emailtaken:"Этот email занят",
+    err_empty:"Введите ник и пароль", err_wrong:"Неверный ник или пароль",
+    welcome:"Привет", clientid:"ID клиента",
+    quick_actions:"Быстрые действия", recent_activity:"Недавняя активность", active_bots:"Активные боты",
+    announcements:"Объявления", spending_chart:"Расходы (сум)",
+    stat_balance:"Баланс", stat_bots:"Мои боты", stat_active:"Активны", stat_pending:"Ожидают",
+    stat_spent:"Всего потрачено", stat_monthly:"Месячная цена",
+    menu_dash:"Главная", menu_profile:"Профиль", menu_balance:"Баланс", menu_upload:"Развернуть бота",
+    menu_mybots:"Мои боты", menu_promo:"Промокоды", menu_tx:"Операции", menu_activity:"Активность",
+    menu_notif:"Уведомления", menu_settings:"Настройки", menu_contact:"Связь с админом", menu_admin:"Админ-панель",
+    back:"В меню",
+    p_profile_t:"Профиль", p_profile_nick:"Ник", p_profile_email:"Email", p_profile_id:"ID клиента", p_profile_bal:"Баланс",
+    p_balance_t:"Баланс", p_balance_card:"Карта", p_balance_topup:"Пополнение", p_balance_amount:"Сумма (мин 5 000)",
+    p_balance_btn:"Пополнить", p_balance_rates:"Месяц 4 900 · Год 64 000 · День 400 сум/день",
+    p_upload_t:"Развернуть бота", p_upload_plan:"Тариф", p_upload_days:"Дни", p_upload_promo:"Промокод (необязательно)",
+    p_upload_file:"Имя файла (.py / .zip / .rar)", p_upload_btn:"Загрузить и оплатить",
+    p_mybots_t:"Мои боты", p_mybots_empty:"Ботов пока нет", p_mybots_deploy:"Развернуть бота",
+    p_mybots_file:"Файл", p_mybots_plan:"Тариф", p_mybots_price:"Цена", p_mybots_status:"Статус", p_mybots_actions:"Действие", p_mybots_delete:"Удалить",
+    p_promo_t:"Промокоды", p_promo_desc:"Введите промокод — на баланс будет начислен бонус.",
+    p_promo_code:"Промокод", p_promo_apply:"Применить", p_promo_list:"Доступные коды", p_promo_used:"Использован",
+    p_tx_t:"История операций", p_tx_empty:"Операций нет",
+    p_tx_date:"Дата", p_tx_desc:"Описание", p_tx_amount:"Сумма", p_tx_type:"Тип",
+    p_activity_t:"Журнал активности", p_activity_empty:"Активности пока нет",
+    p_notif_t:"Уведомления", p_notif_empty:"Уведомлений нет", p_notif_read:"Отметить все прочитанными",
+    p_settings_t:"Настройки", p_settings_lang:"Язык", p_settings_danger:"Опасная зона",
+    p_settings_del:"Удалить аккаунт", p_settings_del_desc:"Ваш аккаунт и все данные будут полностью удалены. Это действие необратимо.",
+    p_contact_t:"Связь с администратором", p_contact_ph:"Ваш вопрос или проблема...",
+    p_contact_send:"Отправить", p_contact_hist:"История", p_contact_empty:"История пуста",
+    p_admin_t:"Админ-панель", p_admin_users:"Пользователи", p_admin_bots:"Боты", p_admin_earned:"Доход",
+    p_admin_card:"Номер карты", p_admin_save:"Сохранить", p_admin_allbots:"Все боты",
+    p_admin_approve:"Подтвердить", p_admin_nobots:"Ботов нет", p_admin_user:"Пользователь", p_admin_file:"Файл", p_admin_status:"Статус",
+    status_active:"Активен", status_pending:"Ожидает",
+    planname_daily:"Дневной", planname_monthly:"Месячный", planname_yearly:"Годовой",
+    tx_topup:"Пополнение баланса", tx_deploy:"Развёртывание бота", tx_promo:"Бонус промокода",
+    msg_topup_ok:"сум добавлено", msg_topup_min:"Минимум 5 000 сум",
+    msg_upload_ok:"Загружено! ", msg_upload_needfile:"Введите имя файла",
+    msg_upload_nobalance:"Недостаточно баланса (", msg_upload_after:" сум нужно)",
+    msg_contact_ok:"Отправлено!", msg_contact_empty:"Напишите сообщение",
+    msg_promo_ok:"Бонус добавлен: +", msg_promo_invalid:"Промокод неверный или использован",
+    msg_card_saved:"Сохранено", msg_notif_read:"Все отмечены прочитанными", msg_acct_deleted:"Аккаунт удалён",
+    you:"Вы", admin_lbl:"Админ", som:"сум", days_word:"дн",
+    ann1:"Новое: годовой тариф по лучшей цене!", ann2:"В понедельник в 02:00 возможны техработы.",
+    ann3:"Промокод YANGI20 — +5000 бонус на баланс.",
+    act_login:"Вошёл в систему", act_register:"Аккаунт создан", act_topup:"Баланс +{amount} сум",
+    act_deploy:"Развёрнут бот: {file}", act_promo:"Применён промокод (+{amount})",
+    act_delbot:"Бот удалён: {file}", act_contact:"Сообщение админу отправлено", act_notif:"Уведомления прочитаны",
+    menu_messages:"Сообщения",
+    p_messages_t:"Сообщения", p_messages_empty:"Нет сообщений", p_messages_unread:"непрочитанных",
+    p_messages_admin:"Админ", p_messages_open:"Открыть", p_messages_none:"Нет диалогов", p_messages_select:"Выберите клиента",
+    chat_ph:"Напишите сообщение...", chat_send:"Отправить", chat_empty:"Пока нет сообщений. Задайте вопрос!",
+    chat_with_admin:"Чат с администратором", chat_admin_replied:"Админ ответил",
+    p_botview_files:"Файлы", p_botview_addfile:"Добавить файл", p_botview_filename:"Имя файла (.py/.zip/.rar)",
+    p_botview_addbtn:"Добавить", p_botview_console:"Консоль", p_botview_run:"Запустить",
+    p_botview_stop:"Остановить", p_botview_clear:"Очистить", p_botview_logs:"Логи",
+    p_botview_nofiles:"Нет файлов", p_botview_created:"Создан", p_botview_plan:"Тариф",
+    p_botview_status:"Статус", p_botview_notfound:"Бот не найден",
+    msg_file_added:"Файл добавлен и отправлен админу", msg_file_needname:"Введите имя файла",
+    console_started:"Бот запущен", console_stopped:"Бот остановлен",
+    console_cleared:"Консоль очищена", console_running:"Бот работает...", console_ready:"Готов. Нажмите Запустить.",
+    p_admin_overview:"Обзор", p_admin_pending_files:"Запросы файлов",
+    p_admin_unread_msgs:"Непрочитанные сообщения", p_admin_filereqs:"Запросы файлов",
+    p_admin_fr_none:"Нет запросов", p_admin_fr_owner:"Владелец", p_admin_fr_bot:"Бот",
+    p_admin_fr_file:"Файл", p_admin_fr_date:"Дата", p_admin_fr_status:"Статус",
+    p_admin_promos:"Управление промокодами", p_admin_promo_new:"Новый промокод",
+    p_admin_promo_code:"Код", p_admin_promo_amount:"Бонус (сум)",
+    p_admin_promo_add:"Добавить", p_admin_promo_delete:"Удалить", p_admin_promo_none:"Нет промокодов",
+    p_admin_allusers:"Все пользователи",
+    msg_promo_added:"Промокод добавлен", msg_promo_deleted:"Промокод удалён", msg_fr_approved:"Файл подтверждён",
+    fr_pending:"Ожидает", fr_done:"Подтверждён",
+    p_admin_msgs_t:"Чат с клиентами", p_admin_msgs_none:"Нет сообщений",
+    p_admin_msgs_reply_ph:"Напишите ответ...", p_admin_msgs_reply_btn:"Ответить",
+    log_created:"Бот создан", log_file_added:"Добавлен файл: {file}",
+    log_started:"Запущен", log_stopped:"Остановлен", log_cleared:"Консоль очищена",
+    act_file_added:"Добавлен файл к боту: {file}", act_bot_run:"Бот запущен: {file}",
+    act_bot_stop:"Бот остановлен: {file}", act_admin_reply:"Админ ответил",
+    act_promo_create:"Создан промокод: {code}", act_fr_approve:"Запрос файла подтверждён",
+    admin_welcome:"Админ-панель", p_admin_dash_desc:"Управляйте системой: клиенты, боты, промокоды и запросы файлов"
+  },
+  en: {
+    nav_login:"Log in", nav_signup:"Sign up", nav_logout:"Log out",
+    hero_badge:"Cloud hosting for your Telegram bots",
+    hero_title_a:"Deploy your bots to the ", hero_title_b:"cloud", hero_title_c:" fast and easy",
+    hero_desc:"Monthly, yearly or daily plan. Pay from balance. Your bot goes live in minutes.",
+    hero_cta1:"Get started — free sign up", hero_cta2:"I have an account",
+    hstat_uptime:"Uptime", hstat_deploy:"Deploy speed", hstat_langs:"Language", hstat_support:"Support",
+    feat_title:"Why CortenCloud?", feat_sub:"All in one — deploy, pay, manage",
+    feat_fast_t:"Fast deploy", feat_fast_d:"Upload your file — the admin launches it within 24h. .py, .zip, .rar supported.",
+    feat_pay_t:"Easy payment", feat_pay_d:"Top up your balance by card. Pick monthly, yearly or daily plan.",
+    feat_promo_t:"Promo codes", feat_promo_d:"Top up your balance for free with promo codes.",
+    feat_secure_t:"Secure", feat_secure_d:"Every client gets a unique ID. Full control via the admin panel.",
+    feat_scale_t:"Scalable", feat_scale_d:"Unlimited number of bots. Each bot is tracked separately.",
+    feat_support_t:"24/7 support", feat_support_d:"Direct chat with the admin and quick replies.",
+    price_title:"Pricing", price_sub:"Choose the period that fits you",
+    plan_daily:"Daily", plan_monthly:"Monthly", plan_yearly:"Yearly",
+    plan_daily_unit:"sum / day", plan_monthly_unit:"sum / 30 days", plan_yearly_unit:"sum / 365 days",
+    plan_feat_flex:"Flexible period", plan_feat_range:"1–365 days", plan_feat_full:"Full support",
+    plan_feat_m30:"30 days hosting", plan_feat_upd:"Free file update", plan_feat_prio:"Priority support",
+    plan_feat_year:"Full year", plan_feat_best:"Best price", plan_feat_vip:"VIP support",
+    plan_choose:"Choose", plan_popular:"Popular",
+    footer:"© 2026 CortenCloud · Bot cloud hosting service",
+    m_login_t:"Welcome back", m_login_s:"Log in to your account",
+    m_reg_t:"Sign up", m_reg_s:"Create an account in a minute",
+    f_nick:"Nick", f_email:"Email", f_pass:"Password", f_pass2:"Confirm password",
+    f_nick_ph:"e.g. ali_dev", f_email_ph:"ali@example.com", f_pass_ph:"min 6 characters", f_pass2_ph:"enter again",
+    f_login_btn:"Log in", f_reg_btn:"Sign up",
+    f_noaccount:"No account yet?", f_haveaccount:"Already have an account?",
+    f_sw_reg:"Sign up", f_sw_login:"Log in",
+    err_nickshort:"Nick must be at least 3 characters", err_email:"Invalid email", err_passshort:"Password must be at least 6 characters",
+    err_passmatch:"Passwords do not match", err_nicktaken:"This nick is taken", err_emailtaken:"This email is taken",
+    err_empty:"Enter nick and password", err_wrong:"Wrong nick or password",
+    welcome:"Hello", clientid:"Client ID",
+    quick_actions:"Quick actions", recent_activity:"Recent activity", active_bots:"Active bots",
+    announcements:"Announcements", spending_chart:"Spending (sum)",
+    stat_balance:"Balance", stat_bots:"My bots", stat_active:"Active", stat_pending:"Pending",
+    stat_spent:"Total spent", stat_monthly:"Monthly price",
+    menu_dash:"Dashboard", menu_profile:"Profile", menu_balance:"Balance", menu_upload:"Deploy bot",
+    menu_mybots:"My bots", menu_promo:"Promo codes", menu_tx:"Transactions", menu_activity:"Activity",
+    menu_notif:"Notifications", menu_settings:"Settings", menu_contact:"Contact admin", menu_admin:"Admin panel",
+    back:"Main menu",
+    p_profile_t:"Profile", p_profile_nick:"Nick", p_profile_email:"Email", p_profile_id:"Client ID", p_profile_bal:"Balance",
+    p_balance_t:"Balance", p_balance_card:"Card", p_balance_topup:"Top up", p_balance_amount:"Amount (min 5 000)",
+    p_balance_btn:"Top up", p_balance_rates:"Monthly 4 900 · Yearly 64 000 · Daily 400 sum/day",
+    p_upload_t:"Deploy bot", p_upload_plan:"Plan", p_upload_days:"Days", p_upload_promo:"Promo code (optional)",
+    p_upload_file:"File name (.py / .zip / .rar)", p_upload_btn:"Upload and pay",
+    p_mybots_t:"My bots", p_mybots_empty:"No bots yet", p_mybots_deploy:"Deploy bot",
+    p_mybots_file:"File", p_mybots_plan:"Plan", p_mybots_price:"Price", p_mybots_status:"Status", p_mybots_actions:"Action", p_mybots_delete:"Delete",
+    p_promo_t:"Promo codes", p_promo_desc:"Enter a promo code — a bonus will be added to your balance.",
+    p_promo_code:"Promo code", p_promo_apply:"Apply", p_promo_list:"Available codes", p_promo_used:"Used",
+    p_tx_t:"Transactions history", p_tx_empty:"No transactions",
+    p_tx_date:"Date", p_tx_desc:"Description", p_tx_amount:"Amount", p_tx_type:"Type",
+    p_activity_t:"Activity log", p_activity_empty:"No activity yet",
+    p_notif_t:"Notifications", p_notif_empty:"No notifications", p_notif_read:"Mark all as read",
+    p_settings_t:"Settings", p_settings_lang:"Language", p_settings_danger:"Danger zone",
+    p_settings_del:"Delete account", p_settings_del_desc:"Your account and all data will be permanently removed. This cannot be undone.",
+    p_contact_t:"Contact admin", p_contact_ph:"Your question or issue...",
+    p_contact_send:"Send", p_contact_hist:"History", p_contact_empty:"History is empty",
+    p_admin_t:"Admin panel", p_admin_users:"Users", p_admin_bots:"Bots", p_admin_earned:"Revenue",
+    p_admin_card:"Card number", p_admin_save:"Save", p_admin_allbots:"All bots",
+    p_admin_approve:"Approve", p_admin_nobots:"No bots", p_admin_user:"User", p_admin_file:"File", p_admin_status:"Status",
+    status_active:"Active", status_pending:"Pending",
+    planname_daily:"Daily", planname_monthly:"Monthly", planname_yearly:"Yearly",
+    tx_topup:"Balance top up", tx_deploy:"Bot deploy", tx_promo:"Promo bonus",
+    msg_topup_ok:"sum added", msg_topup_min:"Minimum 5 000 sum",
+    msg_upload_ok:"Uploaded! ", msg_upload_needfile:"Enter the file name",
+    msg_upload_nobalance:"Not enough balance (", msg_upload_after:" sum needed)",
+    msg_contact_ok:"Sent!", msg_contact_empty:"Write a message",
+    msg_promo_ok:"Bonus added: +", msg_promo_invalid:"Promo code invalid or used",
+    msg_card_saved:"Saved", msg_notif_read:"All marked as read", msg_acct_deleted:"Account deleted",
+    you:"You", admin_lbl:"Admin", som:"sum", days_word:"days",
+    ann1:"New: best price on the yearly plan!", ann2:"Monday 02:00 maintenance may occur.",
+    ann3:"Promo code YANGI20 — +5000 bonus to balance.",
+    act_login:"Logged in", act_register:"Account created", act_topup:"Balance +{amount} sum",
+    act_deploy:"Bot deployed: {file}", act_promo:"Promo code applied (+{amount})",
+    act_delbot:"Bot deleted: {file}", act_contact:"Message sent to admin", act_notif:"Notifications read",
+    menu_messages:"Messages",
+    p_messages_t:"Messages", p_messages_empty:"No messages", p_messages_unread:"unread",
+    p_messages_admin:"Admin", p_messages_open:"Open", p_messages_none:"No conversations", p_messages_select:"Select a customer",
+    chat_ph:"Type a message...", chat_send:"Send", chat_empty:"No messages yet. Ask your question!",
+    chat_with_admin:"Chat with admin", chat_admin_replied:"Admin replied",
+    p_botview_files:"Files", p_botview_addfile:"Add file", p_botview_filename:"File name (.py/.zip/.rar)",
+    p_botview_addbtn:"Add", p_botview_console:"Console", p_botview_run:"Run",
+    p_botview_stop:"Stop", p_botview_clear:"Clear", p_botview_logs:"Logs",
+    p_botview_nofiles:"No files", p_botview_created:"Created", p_botview_plan:"Plan",
+    p_botview_status:"Status", p_botview_notfound:"Bot not found",
+    msg_file_added:"File added and sent to admin", msg_file_needname:"Enter file name",
+    console_started:"Bot started", console_stopped:"Bot stopped",
+    console_cleared:"Console cleared", console_running:"Bot is running...", console_ready:"Ready. Press Run.",
+    p_admin_overview:"Overview", p_admin_pending_files:"File requests",
+    p_admin_unread_msgs:"Unread messages", p_admin_filereqs:"File requests",
+    p_admin_fr_none:"No requests", p_admin_fr_owner:"Owner", p_admin_fr_bot:"Bot",
+    p_admin_fr_file:"File", p_admin_fr_date:"Date", p_admin_fr_status:"Status",
+    p_admin_promos:"Promo code management", p_admin_promo_new:"New promo code",
+    p_admin_promo_code:"Code", p_admin_promo_amount:"Bonus (sum)",
+    p_admin_promo_add:"Add", p_admin_promo_delete:"Delete", p_admin_promo_none:"No promo codes",
+    p_admin_allusers:"All users",
+    msg_promo_added:"Promo code added", msg_promo_deleted:"Promo code deleted", msg_fr_approved:"File approved",
+    fr_pending:"Pending", fr_done:"Approved",
+    p_admin_msgs_t:"Chat with customers", p_admin_msgs_none:"No messages",
+    p_admin_msgs_reply_ph:"Type a reply...", p_admin_msgs_reply_btn:"Reply",
+    log_created:"Bot created", log_file_added:"File added: {file}",
+    log_started:"Started", log_stopped:"Stopped", log_cleared:"Console cleared",
+    act_file_added:"File added to bot: {file}", act_bot_run:"Bot started: {file}",
+    act_bot_stop:"Bot stopped: {file}", act_admin_reply:"Admin replied",
+    act_promo_create:"Promo code created: {code}", act_fr_approve:"File request approved",
+    admin_welcome:"Admin panel", p_admin_dash_desc:"Manage the system: users, bots, promo codes and file requests"
+  }
+};
+
+let curLang = localStorage.getItem('cc_lang') || 'uz';
+function t(k){ return (I18N[curLang] && I18N[curLang][k]) || I18N.uz[k] || k; }
+function tf(k, p){ let s = t(k); if(p){ for(const key in p){ s = s.split('{'+key+'}').join(p[key]); } } return s; }
+function setLang(l){
+  curLang = l; localStorage.setItem('cc_lang', l);
+  document.documentElement.lang = l;
+  applyI18n();
+  // refresh dynamic views
+  if (state.current && user()) {
+    renderDrawer();
+    const active = document.querySelector('.page.active');
+    if (active) showPage(active.id.replace('page-',''));
+  }
+}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  // upload plan options
+  const sel = document.getElementById('up-plan');
+  if (sel){
+    const opts = ['monthly','yearly','daily'];
+    sel.innerHTML = opts.map(p => '<option value="'+p+'">'+t('planname_'+p)+' — '+
+      (p==='monthly'?'4 900':p==='yearly'?'64 000':'400 '+t('som')+'/'+t('days_word'))+' '+t('som')+'</option>').join('');
+    if (sel._last) sel.value = sel._last;
+  }
+  // popular tag
+  const pt = document.getElementById('popular-tag');
+  if (pt) pt.setAttribute('data-tag', t('plan_popular'));
+  // lang buttons active
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === curLang));
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const PRICES = { monthly: 4900, yearly: 64000 };
+const DAILY = 400;
+const LOG_POOL = [
+  'Polling updates...', 'Received update from chat', 'Processed /start command',
+  'Sent response message', 'Handler executed', 'Webhook heartbeat OK',
+  'Cached user session', 'Scheduled task ran', 'Database query OK',
+  'Incoming message routed', 'Inline query handled', 'Callback query resolved'
+];
+let botTimers = {};
+let currentBotId = null;
+
+function load(){
+  try { return JSON.parse(localStorage.getItem('cc_v3') || '{}'); }
+  catch { return {}; }
+}
+let state = load();
+function save(){ localStorage.setItem('cc_v3', JSON.stringify(state)); }
+
+function ensureAdmin(){
+  if (!state.users) state.users = {};
+  if (!state.users['admin']) {
+    state.users['admin'] = {
+      nick:'admin', email:'admin@cortencloud.uz', pass:'BILOLIDDIN',
+      isAdmin:true, balance:0, clientId:10000001, bots:[], messages:[], transactions:[], activity:[], readNotifs:[]
+    };
+  }
+  if (!state.earned) state.earned = 0;
+  if (!state.card) state.card = '8600 1234 5678 9012';
+  if (!state.notifs) state.notifs = [
+    { id:'ann1', icon:'🎉', kind:'info' },
+    { id:'ann2', icon:'🛠', kind:'warn' },
+    { id:'ann3', icon:'🎟', kind:'info' }
+  ];
+  if (!state.promos) state.promos = { YANGI20:5000, VIP50:10000, OY10:2000, NEW2026:8000 };
+  if (!state.fileRequests) state.fileRequests = [];
+  save();
+}
+ensureAdmin();
+
+function user(){ return state.current && state.users ? state.users[state.current] : null; }
+function migrateBot(b){
+  if (!b.id) b.id = Date.now() + Math.floor(Math.random()*100000);
+  if (!b.files) b.files = b.file ? [b.file] : [];
+  if (!b.console) b.console = [];
+  if (!b.logs) b.logs = [{ key:'log_created', params:{}, time: b.createdAt || Date.now() }];
+  if (b.started === undefined) b.started = false;
+  if (!b.createdAt) b.createdAt = Date.now();
+}
+function ensureUserFields(u){
+  if (!u.bots) u.bots = [];
+  u.bots.forEach(migrateBot);
+  if (!u.messages) u.messages = [];
+  if (!u.transactions) u.transactions = [];
+  if (!u.activity) u.activity = [];
+  if (!u.readNotifs) u.readNotifs = [];
+  if (!u.usedPromos) u.usedPromos = [];
+}
+function addActivity(u, key, params){
+  u.activity.unshift({ key, params: params||{}, time: Date.now() });
+  if (u.activity.length > 50) u.activity.length = 50;
+}
+function addTx(u, type, amount, descKey, params){
+  u.transactions.unshift({ type, amount, descKey, params: params||{}, time: Date.now() });
+  if (u.transactions.length > 100) u.transactions.length = 100;
+}
+function findBot(id){
+  const u = user(); if (!u) return null;
+  return u.bots.find(b => String(b.id) === String(id)) || null;
+}
+function adminUnreadCount(){
+  let n = 0;
+  Object.values(state.users).forEach(u => {
+    if (u.isAdmin) return;
+    (u.messages||[]).forEach(m => { if (m.from === 'user' && !m.readByAdmin) n++; });
+  });
+  return n;
+}
+function userUnreadAdminCount(u){
+  return (u.messages||[]).filter(m => m.from === 'admin' && !m.readByUser).length;
+}
+function fmtMoney(n){ return Number(n||0).toLocaleString('ru-RU'); }
+function nowTs(){ const d=new Date(); return d.toLocaleTimeString(curLang==='uz'?'uz-UZ':curLang==='ru'?'ru-RU':'en-GB',{hour12:false}); }
+function fmtTime(ts){
+  const d = new Date(ts);
+  return d.toLocaleString(curLang === 'uz' ? 'uz-UZ' : curLang === 'ru' ? 'ru-RU' : 'en-GB',
+    { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function esc(s){ const d=document.createElement('div'); d.textContent = s==null?'':String(s); return d.innerHTML; }
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+function openModal(name){
+  closeModals();
+  document.getElementById('modal-' + name).classList.add('open');
+  if (name === 'login') setTimeout(()=>document.getElementById('login-nick').focus(), 100);
+  if (name === 'register') setTimeout(()=>document.getElementById('reg-nick').focus(), 100);
+}
+function closeModals(){
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  const le = document.getElementById('login-err'); if (le) le.textContent = '';
+  const re = document.getElementById('reg-err'); if (re) re.textContent = '';
+}
+function switchModal(name){ closeModals(); openModal(name); }
+document.querySelectorAll('.modal-overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) closeModals(); });
+});
+
+function doRegister(){
+  const nick = document.getElementById('reg-nick').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  const err = document.getElementById('reg-err');
+  err.textContent = '';
+  if (!nick || nick.length < 3) { err.textContent = t('err_nickshort'); return; }
+  if (!email || !email.includes('@')) { err.textContent = t('err_email'); return; }
+  if (pass.length < 6) { err.textContent = t('err_passshort'); return; }
+  if (pass !== pass2) { err.textContent = t('err_passmatch'); return; }
+  if (nick.toLowerCase() === 'admin') { err.textContent = t('err_nicktaken'); return; }
+  if (state.users[nick]) { err.textContent = t('err_nicktaken'); return; }
+  if (Object.values(state.users).some(u => u.email === email)) { err.textContent = t('err_emailtaken'); return; }
+  const u = {
+    nick, email, pass, isAdmin:false, balance:0,
+    clientId: 10000000 + Math.floor(Math.random()*89999999),
+    bots:[], messages:[], transactions:[], activity:[], readNotifs:[], usedPromos:[]
+  };
+  state.users[nick] = u;
+  state.current = nick;
+  addActivity(u, 'act_register');
+  save();
+  closeModals();
+  enterApp();
+}
+
+function doLogin(){
+  const nick = document.getElementById('login-nick').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  if (!nick || !pass) { err.textContent = t('err_empty'); return; }
+  const u = state.users[nick];
+  if (!u || u.pass !== pass) { err.textContent = t('err_wrong'); return; }
+  state.current = nick;
+  ensureUserFields(u);
+  addActivity(u, 'act_login');
+  save();
+  closeModals();
+  enterApp();
+}
+
+function doLogout(){
+  state.current = null; save();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('landing').style.display = 'block';
+  closeDrawer();
+}
+
+function enterApp(){
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const u = user();
+  document.getElementById('nav-name').textContent = u.nick + (u.isAdmin ? ' · '+t('admin_lbl') : '');
+  document.getElementById('nav-bal').textContent = fmtMoney(u.balance) + ' ' + t('som');
+  document.getElementById('nav-avatar').textContent = u.nick.charAt(0).toUpperCase();
+  showPage('dash');
+}
+
+/* ============================================================
+   DRAWER
+   ============================================================ */
+const MENU_USER = [
+  { ic:'🏠', key:'menu_dash', p:'dash' },
+  { ic:'👤', key:'menu_profile', p:'profile' },
+  { ic:'💰', key:'menu_balance', p:'balance' },
+  { ic:'🚀', key:'menu_upload', p:'upload' },
+  { ic:'📂', key:'menu_mybots', p:'mybots' },
+  { ic:'🎟', key:'menu_promo', p:'promo' },
+  { ic:'📋', key:'menu_tx', p:'tx' },
+  { ic:'📊', key:'menu_activity', p:'activity' },
+  { ic:'💬', key:'menu_messages', p:'messages' },
+  { ic:'🆘', key:'menu_contact', p:'contact' },
+  { ic:'🔔', key:'menu_notif', p:'notif' },
+  { ic:'⚙', key:'menu_settings', p:'settings' }
+];
+const MENU_ADMIN = [
+  { ic:'🏠', key:'menu_dash', p:'dash' },
+  { ic:'💬', key:'menu_messages', p:'messages' },
+  { ic:'🛠', key:'menu_admin', p:'admin' },
+  { ic:'⚙', key:'menu_settings', p:'settings' }
+];
+function openDrawer(){
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-bd').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-bd').classList.remove('open');
+}
+function renderDrawer(){
+  const u = user(); if (!u) return;
+  const items = u.isAdmin ? MENU_ADMIN : MENU_USER;
+  let badges = {};
+  if (u.isAdmin){
+    const au = adminUnreadCount();
+    if (au > 0) badges.messages = au;
+  } else {
+    const uu = userUnreadAdminCount(u);
+    if (uu > 0) badges.messages = uu;
+    const nu = state.notifs.filter(n => !u.readNotifs.includes(n.id)).length;
+    if (nu > 0) badges.notif = nu;
+  }
+  document.getElementById('drawer-nav').innerHTML = items.map(i => {
+    const active = currentPage === i.p ? ' active' : '';
+    const badge = badges[i.p] ? '<span class="badge-count">'+badges[i.p]+'</span>' : '';
+    return '<div class="drawer-item'+active+'" onclick="showPage(\''+i.p+'\')"><span class="ic">'+i.ic+'</span><span>'+t(i.key)+'</span>'+badge+'</div>';
+  }).join('');
+}
+
+/* ============================================================
+   PAGE ROUTING
+   ============================================================ */
+let currentPage = 'dash';
+const RENDERERS = {
+  dash:renderDash, profile:renderProfile, balance:renderBalance, upload:renderUpload,
+  mybots:renderBots, botview:renderBotView, promo:renderPromo, tx:renderTx,
+  activity:renderActivity, messages:renderMessages, notif:renderNotif,
+  contact:renderContact, admin:renderAdmin
+};
+function showPage(name){
+  currentPage = name;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  closeDrawer();
+  renderDrawer();
+  if (RENDERERS[name] && user()) RENDERERS[name]();
+  updateNav();
+}
+function updateNav(){
+  const u = user(); if (!u) return;
+  document.getElementById('nav-bal').textContent = fmtMoney(u.balance) + ' ' + t('som');
+}
+function setText(id, txt){ const el = document.getElementById(id); if (el) el.textContent = txt; }
+function dashChartMode(mode){
+  const w = document.getElementById('dash-chart'); if (!w) return;
+  const wrap = w.closest('.chart-wrap'); if (wrap) wrap.style.display = mode;
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDash(){
+  const u = user();
+  if (u.isAdmin){ renderAdminDash(); return; }
+  setText('welcome-text', t('welcome') + ', ' + u.nick + '! 👋');
+  setText('welcome-id', u.clientId);
+  setText('dash-h1', '📊 ' + t('spending_chart'));
+  setText('dash-h2', '📣 ' + t('announcements'));
+  setText('dash-h3', '🕒 ' + t('recent_activity'));
+  setText('dash-h4', '🤖 ' + t('active_bots'));
+  const spent = u.transactions.filter(x => x.type==='deploy').reduce((s,x)=>s+x.amount,0);
+  const active = u.bots.filter(b => b.status==='active').length;
+  const pending = u.bots.filter(b => b.status==='pending').length;
+  const stats = [
+    { si:'💰', k:'stat_balance', v: fmtMoney(u.balance), cls:'blue' },
+    { si:'🤖', k:'stat_bots', v: u.bots.length, cls:'' },
+    { si:'✅', k:'stat_active', v: active, cls:'green' },
+    { si:'⏳', k:'stat_pending', v: pending, cls:'amber' },
+    { si:'💸', k:'stat_spent', v: fmtMoney(spent), cls:'purple' },
+    { si:'📆', k:'stat_monthly', v: '4 900', cls:'' }
+  ];
+  document.getElementById('dash-stats').innerHTML = stats.map(s =>
+    '<div class="stat-card"><div class="label"><span class="si">'+s.si+'</span> '+t(s.k)+'</div><div class="value '+s.cls+'">'+s.v+'</div></div>'
+  ).join('');
+  const qa = [
+    { ic:'🚀', k:'menu_upload', p:'upload' },
+    { ic:'💰', k:'menu_balance', p:'balance' },
+    { ic:'🎟', k:'menu_promo', p:'promo' },
+    { ic:'🆘', k:'menu_contact', p:'contact' }
+  ];
+  document.getElementById('dash-quick').innerHTML = qa.map(q =>
+    '<div class="quick-card" onclick="showPage(\''+q.p+'\')"><div class="ic">'+q.ic+'</div><div class="lb">'+t(q.k)+'</div></div>'
+  ).join('');
+  dashChartMode('flex');
+  renderChart();
+  document.getElementById('dash-ann').innerHTML = state.notifs.map(n =>
+    '<div class="ann-item'+(n.kind==='warn'?' warn':'')+'"><span class="ai">'+n.icon+'</span><span>'+t(n.id)+'</span></div>'
+  ).join('');
+  const act = u.activity.slice(0,6);
+  document.getElementById('dash-activity').innerHTML = act.length ?
+    act.map(a => '<div class="tl-item"><div class="tl-dot">▪</div><div class="tl-body"><div class="txt">'+esc(tf(a.key, a.params))+'</div><div class="time">'+fmtTime(a.time)+'</div></div></div>').join('')
+    : '<div class="empty"><div class="ic">🕒</div><p>'+t('p_activity_empty')+'</p></div>';
+  const ab = u.bots.filter(b => b.status==='active').slice(0,4);
+  const box = document.getElementById('dash-bots');
+  if (!ab.length){
+    box.innerHTML = '<div class="empty"><div class="ic">🤖</div><p>'+t('p_mybots_empty')+'</p><button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="showPage(\'upload\')">'+t('p_mybots_deploy')+'</button></div>';
+  } else {
+    box.innerHTML = '<table><tbody>'+ab.map(b =>
+      '<tr style="cursor:pointer" onclick="openBotView(\''+b.id+'\')"><td>🤖 '+esc(b.file)+'</td><td><span class="badge badge-active">'+t('status_active')+'</span></td></tr>'
+    ).join('')+'</tbody></table>';
+  }
+}
+
+function renderAdminDash(){
+  const u = user();
+  setText('welcome-text', t('admin_welcome') + ' 👋');
+  setText('welcome-id', '—');
+  setText('dash-h1', '📥 ' + t('p_admin_filereqs'));
+  setText('dash-h2', '💬 ' + t('p_admin_msgs_t'));
+  setText('dash-h3', '🕒 ' + t('recent_activity'));
+  setText('dash-h4', '👥 ' + t('p_admin_allusers'));
+  const users = Object.values(state.users).filter(x => !x.isAdmin);
+  const allBots = []; users.forEach(x => (x.bots||[]).forEach(b => allBots.push(b)));
+  const pendingFR = state.fileRequests.filter(f => f.status === 'pending').length;
+  const stats = [
+    { si:'👥', k:'p_admin_users', v: users.length, cls:'purple' },
+    { si:'🤖', k:'p_admin_bots', v: allBots.length, cls:'blue' },
+    { si:'💎', k:'p_admin_earned', v: fmtMoney(state.earned||0), cls:'green' },
+    { si:'📥', k:'p_admin_pending_files', v: pendingFR, cls:'amber' },
+    { si:'💬', k:'p_admin_unread_msgs', v: adminUnreadCount(), cls:'purple' },
+    { si:'🎟', k:'menu_promo', v: Object.keys(state.promos||{}).length, cls:'' }
+  ];
+  document.getElementById('dash-stats').innerHTML = stats.map(s =>
+    '<div class="stat-card"><div class="label"><span class="si">'+s.si+'</span> '+t(s.k)+'</div><div class="value '+s.cls+'">'+s.v+'</div></div>'
+  ).join('');
+  const qa = [
+    { ic:'💬', k:'menu_messages', p:'messages' },
+    { ic:'🛠', k:'menu_admin', p:'admin' },
+    { ic:'📥', k:'p_admin_filereqs', p:'admin' },
+    { ic:'🎟', k:'menu_promo', p:'admin' }
+  ];
+  document.getElementById('dash-quick').innerHTML = qa.map(q =>
+    '<div class="quick-card" onclick="showPage(\''+q.p+'\')"><div class="ic">'+q.ic+'</div><div class="lb">'+t(q.k)+'</div></div>'
+  ).join('');
+  dashChartMode('block');
+  const frs = state.fileRequests.slice(0,6);
+  document.getElementById('dash-chart').innerHTML = frs.length ? frs.map(f =>
+    '<div class="file-item" style="margin-bottom:6px"><span>📄 '+esc(f.newFile)+'</span><span style="color:var(--muted);font-size:.78rem">'+esc(f.nick)+' · '+esc(f.botFile)+'</span><span class="badge '+(f.status==='pending'?'badge-pending':'badge-active')+'">'+t(f.status==='pending'?'fr_pending':'fr_done')+'</span></div>'
+  ).join('') : '<div class="empty" style="padding:20px"><p>'+t('p_admin_fr_none')+'</p></div>';
+  const convs = users.filter(x => (x.messages||[]).length);
+  document.getElementById('dash-ann').innerHTML = convs.length ? convs.slice(0,5).map(c => {
+    const last = c.messages[c.messages.length-1];
+    return '<div class="ann-item"><span class="ai">💬</span><span><b>'+esc(c.nick)+'</b>: '+esc(last.text)+'</span></div>';
+  }).join('') : '<div class="empty" style="padding:20px"><p>'+t('p_admin_msgs_none')+'</p></div>';
+  const act = u.activity.slice(0,6);
+  document.getElementById('dash-activity').innerHTML = act.length ?
+    act.map(a => '<div class="tl-item"><div class="tl-dot">▪</div><div class="tl-body"><div class="txt">'+esc(tf(a.key, a.params))+'</div><div class="time">'+fmtTime(a.time)+'</div></div></div>').join('')
+    : '<div class="empty"><div class="ic">🕒</div><p>'+t('p_activity_empty')+'</p></div>';
+  const cBox = document.getElementById('dash-bots');
+  cBox.innerHTML = users.length ? '<table><tbody>'+users.slice(0,6).map(x =>
+    '<tr style="cursor:pointer" onclick="showPage(\'messages\')"><td>👤 '+esc(x.nick)+'</td><td><span class="badge badge-active">'+(x.bots||[]).length+'</span></td></tr>'
+  ).join('')+'</tbody></table>' : '<div class="empty"><p>'+t('p_admin_msgs_none')+'</p></div>';
+}
+
+function renderChart(){
+  // group deploy spend by month, last 6 months
+  const now = new Date();
+  const months = [];
+  for (let i=5; i>=0; i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    months.push({ ym: d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'), label: d.toLocaleString(curLang==='uz'?'uz-UZ':curLang==='ru'?'ru-RU':'en-GB',{month:'short'}), sum:0 });
+  }
+  const u = user();
+  u.transactions.forEach(tx => {
+    if (tx.type !== 'deploy') return;
+    const d = new Date(tx.time);
+    const ym = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const m = months.find(x => x.ym === ym);
+    if (m) m.sum += tx.amount;
+  });
+  const max = Math.max(1, ...months.map(m => m.sum));
+  document.getElementById('dash-chart').innerHTML = months.map(m =>
+    '<div class="chart-bar"><div class="val">'+(m.sum? fmtMoney(m.sum):'')+'</div>'+
+    '<div class="bar'+(m.sum?'':' zero')+'" style="height:'+(m.sum? Math.max(6, (m.sum/max)*130) : 4)+'px"></div>'+
+    '<div class="lab">'+m.label+'</div></div>'
+  ).join('');
+}
+
+function renderProfile(){
+  const u = user();
+  document.getElementById('pf-nick').textContent = u.nick;
+  document.getElementById('pf-email').textContent = u.email || '—';
+  document.getElementById('pf-id').textContent = u.clientId;
+  document.getElementById('pf-bal').textContent = fmtMoney(u.balance) + ' ' + t('som');
+}
+
+function renderBalance(){
+  const u = user();
+  document.getElementById('bal-val').textContent = fmtMoney(u.balance) + ' ' + t('som');
+  document.getElementById('card-show').textContent = state.card;
+  document.getElementById('topup-msg').innerHTML = '';
+}
+
+function doTopup(){
+  const u = user();
+  const amount = parseInt(document.getElementById('topup-amt').value, 10);
+  const box = document.getElementById('topup-msg');
+  if (!amount || amount < 5000){
+    box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_topup_min')+'</div>'; return;
+  }
+  u.balance += amount;
+  addTx(u, 'in', amount, 'tx_topup');
+  addActivity(u, 'act_topup', { amount: fmtMoney(amount) });
+  save();
+  document.getElementById('topup-amt').value = '';
+  renderBalance();
+  box.innerHTML = '<div class="flash flash-ok">✓ +'+fmtMoney(amount)+' '+t('msg_topup_ok')+'</div>';
+  updateNav(); renderDrawer();
+}
+
+function renderUpload(){
+  const sel = document.getElementById('up-plan');
+  applyI18n();
+  document.getElementById('days-wrap').style.display = (sel.value === 'daily') ? 'block' : 'none';
+  document.getElementById('up-msg').innerHTML = '';
+}
+document.getElementById('up-plan').addEventListener('change', function(){
+  this._last = this.value;
+  document.getElementById('days-wrap').style.display = this.value === 'daily' ? 'block' : 'none';
+});
+
+function doUpload(){
+  const u = user();
+  const plan = document.getElementById('up-plan').value;
+  const file = document.getElementById('up-file').value.trim();
+  const days = parseInt(document.getElementById('up-days').value, 10) || 7;
+  const box = document.getElementById('up-msg');
+  if (!file){ box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_upload_needfile')+'</div>'; return; }
+  let price = plan === 'daily' ? days * DAILY : PRICES[plan];
+  if (u.balance < price){
+    box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_upload_nobalance')+fmtMoney(price)+t('msg_upload_after')+'</div>'; return;
+  }
+  u.balance -= price;
+  state.earned = (state.earned || 0) + price;
+  const ts = nowTs();
+  const bot = {
+    id: Date.now() + Math.floor(Math.random()*100000),
+    file, plan, price,
+    days: plan === 'daily' ? days : (plan === 'monthly' ? 30 : 365),
+    status:'active', date: new Date().toLocaleString(), createdAt: Date.now(),
+    files:[file],
+    console: [
+      '['+ts+'] Deploying bot: '+file,
+      '['+ts+'] Tariff: '+t('planname_'+plan),
+      '['+ts+'] Status: <span class="ok">active</span>',
+      '['+ts+'] '+t('console_ready')
+    ],
+    logs: [{ key:'log_created', params:{}, time: Date.now() }],
+    started:false
+  };
+  u.bots.push(bot);
+  addTx(u, 'out', price, 'tx_deploy');
+  addActivity(u, 'act_deploy', { file });
+  save();
+  box.innerHTML = '<div class="flash flash-ok">✓ '+t('msg_upload_ok')+fmtMoney(price)+' '+t('som')+'</div>';
+  document.getElementById('up-file').value = '';
+  document.getElementById('up-promo').value = '';
+  updateNav(); renderDrawer();
+}
+
+function renderBots(){
+  const u = user();
+  const box = document.getElementById('bots-box');
+  if (!u.bots.length){
+    box.innerHTML = '<div class="empty"><div class="ic">📂</div><p>'+t('p_mybots_empty')+'</p><button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="showPage(\'upload\')">'+t('p_mybots_deploy')+'</button></div>';
+    return;
+  }
+  box.innerHTML = '<table><thead><tr><th>'+t('p_mybots_file')+'</th><th>'+t('p_mybots_plan')+'</th><th>'+t('p_mybots_price')+'</th><th>'+t('p_mybots_status')+'</th><th>'+t('p_mybots_actions')+'</th></tr></thead><tbody>' +
+    u.bots.map((b) => {
+      const cls = b.status === 'active' ? 'badge-active' : 'badge-pending';
+      const lab = t('status_' + b.status);
+      const pl = t('planname_'+b.plan) + (b.plan==='daily'?' ('+b.days+' '+t('days_word')+')':'');
+      return '<tr style="cursor:pointer" onclick="openBotView(\''+b.id+'\')"><td>🤖 '+esc(b.file)+'</td><td>'+pl+'</td><td>'+fmtMoney(b.price)+'</td><td><span class="badge '+cls+'">'+lab+'</span></td><td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openBotView(\''+b.id+'\')">'+t('p_messages_open')+'</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();delBot(\''+b.id+'\')">'+t('p_mybots_delete')+'</button></td></tr>';
+    }).join('') + '</tbody></table>';
+}
+function delBot(id){
+  const u = user();
+  const i = u.bots.findIndex(b => String(b.id) === String(id));
+  if (i < 0) return;
+  const b = u.bots[i];
+  if (b && botTimers[b.id]){ clearInterval(botTimers[b.id]); delete botTimers[b.id]; }
+  u.bots.splice(i, 1);
+  if (b) addActivity(u, 'act_delbot', { file: b.file });
+  save();
+  renderBots(); renderDrawer();
+}
+
+function renderPromo(){
+  const u = user();
+  document.getElementById('promo-msg').innerHTML = '';
+  const list = Object.keys(state.promos).map(code => {
+    const used = u.usedPromos.includes(code);
+    return '<div class="ann-item'+(used?' warn':'')+'"><span class="ai">'+(used?'✅':'🎟')+'</span><span><b>'+code+'</b> — +'+fmtMoney(state.promos[code])+' '+t('som')+(used?' · '+t('p_promo_used'):'')+'</span></div>';
+  }).join('');
+  document.getElementById('promo-list').innerHTML = list;
+}
+function doPromo(){
+  const u = user();
+  const code = document.getElementById('promo-code').value.trim().toUpperCase();
+  const box = document.getElementById('promo-msg');
+  if (!code || !state.promos[code] || u.usedPromos.includes(code)){
+    box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_promo_invalid')+'</div>'; return;
+  }
+  const bonus = state.promos[code];
+  u.balance += bonus;
+  u.usedPromos.push(code);
+  addTx(u, 'in', bonus, 'tx_promo');
+  addActivity(u, 'act_promo', { amount: fmtMoney(bonus) });
+  save();
+  document.getElementById('promo-code').value = '';
+  renderPromo();
+  box.innerHTML = '<div class="flash flash-ok">✓ '+t('msg_promo_ok')+fmtMoney(bonus)+' '+t('som')+'</div>';
+  updateNav(); renderDrawer();
+}
+
+function renderTx(){
+  const u = user();
+  const box = document.getElementById('tx-box');
+  if (!u.transactions.length){
+    box.innerHTML = '<div class="empty"><div class="ic">📋</div><p>'+t('p_tx_empty')+'</p></div>'; return;
+  }
+  box.innerHTML = '<table><thead><tr><th>'+t('p_tx_date')+'</th><th>'+t('p_tx_desc')+'</th><th>'+t('p_tx_amount')+'</th><th>'+t('p_tx_type')+'</th></tr></thead><tbody>' +
+    u.transactions.map(x => {
+      const sign = x.type==='in' ? '+' : '−';
+      const cls = x.type==='in' ? 'badge-in' : 'badge-out';
+      const lab = x.type==='in' ? '↑' : '↓';
+      return '<tr><td>'+fmtTime(x.time)+'</td><td>'+esc(tf(x.descKey, x.params))+'</td><td><b>'+sign+fmtMoney(x.amount)+'</b></td><td><span class="badge '+cls+'">'+lab+'</span></td></tr>';
+    }).join('') + '</tbody></table>';
+}
+
+function renderActivity(){
+  const u = user();
+  const box = document.getElementById('activity-box');
+  if (!u.activity.length){
+    box.innerHTML = '<div class="empty"><div class="ic">📊</div><p>'+t('p_activity_empty')+'</p></div>'; return;
+  }
+  box.innerHTML = u.activity.map(a =>
+    '<div class="tl-item"><div class="tl-dot">▪</div><div class="tl-body"><div class="txt">'+esc(tf(a.key, a.params))+'</div><div class="time">'+fmtTime(a.time)+'</div></div></div>'
+  ).join('');
+}
+
+function renderNotif(){
+  const u = user();
+  const box = document.getElementById('notif-box');
+  if (!state.notifs.length){
+    box.innerHTML = '<div class="empty"><div class="ic">🔔</div><p>'+t('p_notif_empty')+'</p></div>'; return;
+  }
+  box.innerHTML = state.notifs.map(n =>
+    '<div class="ann-item'+(n.kind==='warn'?' warn':'')+'"><span class="ai">'+n.icon+'</span><span>'+t(n.id)+'</span></div>'
+  ).join('');
+}
+function markAllRead(){
+  const u = user();
+  state.notifs.forEach(n => { if (!u.readNotifs.includes(n.id)) u.readNotifs.push(n.id); });
+  addActivity(u, 'act_notif');
+  save();
+  renderNotif(); renderDrawer();
+  const box = document.querySelector('#page-notif .card');
+  const f = document.createElement('div'); f.className='flash flash-ok'; f.textContent='✓ '+t('msg_notif_read');
+  box.appendChild(f);
+  setTimeout(()=> f.remove(), 2500);
+}
+
+function deleteAccount(){
+  const u = user();
+  if (!confirm('Delete account "'+u.nick+'"?')) return;
+  delete state.users[state.current];
+  state.current = null;
+  save();
+  doLogout();
+}
+
+function renderContact(){
+  const u = user();
+  document.getElementById('contact-msg').innerHTML = '';
+  const box = document.getElementById('chat-box');
+  if (!u.messages.length){
+    box.innerHTML = '<div class="empty" style="padding:30px"><div class="ic">💬</div><p>'+t('chat_empty')+'</p></div>';
+    return;
+  }
+  box.innerHTML = u.messages.map(m => {
+    const cls = m.from === 'user' ? 'user' : 'admin';
+    const who = m.from === 'user' ? t('you') : t('admin_lbl');
+    return '<div class="chat-msg '+cls+'">'+esc(m.text)+'<div class="meta">'+who+' · '+fmtTime(m.time)+'</div></div>';
+  }).join('');
+  let changed = false;
+  u.messages.forEach(m => { if (m.from === 'admin' && !m.readByUser){ m.readByUser = true; changed = true; } });
+  if (changed){ save(); renderDrawer(); }
+  box.scrollTop = box.scrollHeight;
+}
+function doContact(){
+  const u = user();
+  const text = document.getElementById('contact-text').value.trim();
+  const box = document.getElementById('contact-msg');
+  if (!text){ box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_contact_empty')+'</div>'; return; }
+  u.messages.push({ from:'user', text, time: Date.now(), readByAdmin:false, readByUser:true });
+  addActivity(u, 'act_contact');
+  save();
+  document.getElementById('contact-text').value = '';
+  renderContact();
+  box.innerHTML = '<div class="flash flash-ok">✓ '+t('msg_contact_ok')+'</div>';
+  renderDrawer();
+}
+
+function renderAdmin(){
+  const u = user();
+  const users = Object.values(state.users).filter(x => !x.isAdmin);
+  const allBots = [];
+  users.forEach(x => (x.bots||[]).forEach((b, i) => allBots.push(Object.assign({}, b, { nick:x.nick, idx:i }))));
+  setText('ad-users', users.length);
+  setText('ad-bots', allBots.length);
+  setText('ad-earned', fmtMoney(state.earned || 0));
+  setText('ad-fr-pending', state.fileRequests.filter(f => f.status==='pending').length);
+  setText('ad-unread-msgs', adminUnreadCount());
+  document.getElementById('ad-card').value = state.card;
+  renderAdminPromos();
+  renderFileReqs();
+  const bbox = document.getElementById('ad-bots-box');
+  if (!allBots.length){ bbox.innerHTML = '<p style="color:var(--muted)">'+t('p_admin_nobots')+'</p>'; }
+  else {
+    bbox.innerHTML = '<table><thead><tr><th>'+t('p_admin_user')+'</th><th>'+t('p_admin_file')+'</th><th>'+t('p_admin_fr_file')+'</th><th>'+t('p_admin_status')+'</th></tr></thead><tbody>' +
+      allBots.map(b => '<tr><td>'+esc(b.nick)+'</td><td>🤖 '+esc(b.file)+'</td><td>'+(b.files||[]).length+'</td><td><span class="badge '+(b.status==='active'?'badge-active':'badge-pending')+'">'+t('status_'+b.status)+'</span></td></tr>').join('') + '</tbody></table>';
+  }
+  const ubox = document.getElementById('ad-users-box');
+  if (!users.length){ ubox.innerHTML = '<p style="color:var(--muted)">'+t('p_admin_msgs_none')+'</p>'; }
+  else {
+    ubox.innerHTML = '<table><thead><tr><th>'+t('p_admin_user')+'</th><th>'+t('p_admin_fr_owner')+'</th><th>'+t('p_admin_bots')+'</th><th>'+t('stat_balance')+'</th></tr></thead><tbody>' +
+      users.map(x => '<tr><td>'+esc(x.nick)+'</td><td><code>'+x.clientId+'</code></td><td>'+(x.bots||[]).length+'</td><td>'+fmtMoney(x.balance)+'</td></tr>').join('') + '</tbody></table>';
+  }
+}
+function renderAdminPromos(){
+  const box = document.getElementById('ad-promo-list');
+  const codes = Object.keys(state.promos);
+  if (!codes.length){ box.innerHTML = '<p style="color:var(--muted)">'+t('p_admin_promo_none')+'</p>'; return; }
+  box.innerHTML = codes.map(code =>
+    '<div class="promo-row"><span class="pc">'+esc(code)+'</span><span>+'+fmtMoney(state.promos[code])+' '+t('som')+'</span><button class="btn btn-danger btn-sm" onclick="deletePromo(\''+esc(code)+'\')">'+t('p_admin_promo_delete')+'</button></div>'
+  ).join('');
+}
+function addPromo(){
+  const u = user();
+  const code = document.getElementById('ad-promo-code').value.trim().toUpperCase();
+  const amount = parseInt(document.getElementById('ad-promo-amount').value, 10);
+  const box = document.getElementById('ad-promo-msg');
+  if (!code || code.length < 3){ box.innerHTML = '<div class="flash flash-err">⚠ '+t('err_nickshort')+'</div>'; return; }
+  if (!amount || amount < 1){ box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_topup_min')+'</div>'; return; }
+  state.promos[code] = amount;
+  addActivity(u, 'act_promo_create', { code });
+  save();
+  document.getElementById('ad-promo-code').value = '';
+  document.getElementById('ad-promo-amount').value = '';
+  renderAdminPromos();
+  box.innerHTML = '<div class="flash flash-ok">✓ '+t('msg_promo_added')+': '+esc(code)+' (+'+fmtMoney(amount)+')</div>';
+}
+function deletePromo(code){
+  if (!state.promos[code]) return;
+  delete state.promos[code];
+  save();
+  renderAdminPromos();
+}
+function renderFileReqs(){
+  const box = document.getElementById('ad-fr-box');
+  if (!state.fileRequests.length){ box.innerHTML = '<p style="color:var(--muted)">'+t('p_admin_fr_none')+'</p>'; return; }
+  box.innerHTML = '<table><thead><tr><th>'+t('p_admin_fr_owner')+'</th><th>'+t('p_admin_fr_bot')+'</th><th>'+t('p_admin_fr_file')+'</th><th>'+t('p_admin_fr_date')+'</th><th>'+t('p_admin_fr_status')+'</th><th></th></tr></thead><tbody>' +
+    state.fileRequests.slice().reverse().map(f => '<tr><td>'+esc(f.nick)+'</td><td>🤖 '+esc(f.botFile)+'</td><td>📄 '+esc(f.newFile)+'</td><td>'+fmtTime(f.time)+'</td><td><span class="badge '+(f.status==='pending'?'badge-pending':'badge-active')+'">'+t(f.status==='pending'?'fr_pending':'fr_done')+'</span></td><td>'+(f.status==='pending'?'<button class="btn btn-success btn-sm" onclick="approveFile(\''+f.id+'\')">'+t('p_admin_approve')+'</button>':'')+'</td></tr>').join('') + '</tbody></table>';
+}
+function approveFile(id){
+  const u = user();
+  const f = state.fileRequests.find(x => String(x.id) === String(id));
+  if (!f) return;
+  f.status = 'done';
+  addActivity(u, 'act_fr_approve');
+  save();
+  renderFileReqs();
+  setText('ad-fr-pending', state.fileRequests.filter(x => x.status==='pending').length);
+}
+function saveCard(){
+  state.card = document.getElementById('ad-card').value.trim() || state.card;
+  save();
+  document.getElementById('ad-msg').innerHTML = '<div class="flash flash-ok">✓ '+t('msg_card_saved')+'</div>';
+}
+
+/* ============================================================
+   BOT VIEW (files / console / logs)
+   ============================================================ */
+function openBotView(id){
+  currentBotId = String(id);
+  showPage('botview');
+}
+function renderBotView(){
+  const b = findBot(currentBotId);
+  const titleEl = document.getElementById('bv-title');
+  if (!b){
+    titleEl.textContent = t('p_botview_notfound');
+    ['bv-info','bv-files','bv-console','bv-logs'].forEach(id => { const e=document.getElementById(id); if(e) e.innerHTML=''; });
+    return;
+  }
+  titleEl.innerHTML = '🤖 <span class="bt-file">'+esc(b.file)+'</span> <span class="badge '+(b.status==='active'?'badge-active':'badge-pending')+'">'+t('status_'+b.status)+'</span>';
+  document.getElementById('bv-info').innerHTML =
+    '<div class="bi"><div class="bk">'+t('p_botview_plan')+'</div><div class="bv">'+t('planname_'+b.plan)+(b.plan==='daily'?' ('+b.days+' '+t('days_word')+')':'')+'</div></div>' +
+    '<div class="bi"><div class="bk">'+t('p_mybots_price')+'</div><div class="bv">'+fmtMoney(b.price)+' '+t('som')+'</div></div>' +
+    '<div class="bi"><div class="bk">'+t('p_botview_created')+'</div><div class="bv">'+fmtTime(b.createdAt)+'</div></div>' +
+    '<div class="bi"><div class="bk">'+t('p_botview_files')+'</div><div class="bv">'+(b.files||[]).length+'</div></div>';
+  renderBotFiles(b);
+  updateConsoleEl(b);
+  renderBotLogs(b);
+  const fm = document.getElementById('bv-file-msg'); if (fm) fm.innerHTML = '';
+  const fi = document.getElementById('bv-file-input'); if (fi) fi.value = '';
+  if (b.started) startBotTimer(b);
+}
+function renderBotFiles(b){
+  const box = document.getElementById('bv-files');
+  if (!(b.files||[]).length){ box.innerHTML = '<p style="color:var(--muted);font-size:.85rem">'+t('p_botview_nofiles')+'</p>'; return; }
+  box.innerHTML = b.files.map(f => '<div class="file-item"><span>📄</span><span class="fn">'+esc(f)+'</span></div>').join('');
+}
+function renderBotLogs(b){
+  const box = document.getElementById('bv-logs');
+  if (!(b.logs||[]).length){ box.innerHTML = '<p style="color:var(--muted);font-size:.85rem">'+t('p_activity_empty')+'</p>'; return; }
+  box.innerHTML = b.logs.slice().reverse().map(l => '<div class="log-item"><span class="lt">'+fmtTime(l.time)+'</span>'+esc(tf(l.key, l.params))+'</div>').join('');
+}
+function updateConsoleEl(b){
+  const el = document.getElementById('bv-console'); if (!el) return;
+  el.innerHTML = (b.console||[]).join('\n') || '<span class="dim">'+t('console_ready')+'</span>';
+  el.scrollTop = el.scrollHeight;
+}
+function pushConsoleLine(b, line){
+  b.console = b.console || [];
+  b.console.push('['+nowTs()+'] '+line);
+  if (b.console.length > 200) b.console.shift();
+}
+function startBotTimer(b){
+  if (botTimers[b.id]) return;
+  botTimers[b.id] = setInterval(() => {
+    const bb = findBot(b.id);
+    if (!bb || !bb.started || String(currentBotId) !== String(b.id) || !document.getElementById('page-botview').classList.contains('active')){
+      if (botTimers[b.id]){ clearInterval(botTimers[b.id]); delete botTimers[b.id]; }
+      return;
+    }
+    pushConsoleLine(bb, LOG_POOL[Math.floor(Math.random()*LOG_POOL.length)]);
+    updateConsoleEl(bb);
+    if (bb.console.length % 5 === 0) save();
+  }, 1500);
+}
+function addBotFile(){
+  const u = user();
+  const b = findBot(currentBotId);
+  const box = document.getElementById('bv-file-msg');
+  if (!b) return;
+  const file = document.getElementById('bv-file-input').value.trim();
+  if (!file){ box.innerHTML = '<div class="flash flash-err">⚠ '+t('msg_file_needname')+'</div>'; return; }
+  b.files = b.files || [];
+  b.files.push(file);
+  pushConsoleLine(b, 'File added: '+file);
+  b.logs = b.logs || [];
+  b.logs.push({ key:'log_file_added', params:{ file }, time: Date.now() });
+  state.fileRequests.push({ id: Date.now()+Math.floor(Math.random()*100000), nick: u.nick, botId: b.id, botFile: b.file, newFile: file, time: Date.now(), status:'pending' });
+  addActivity(u, 'act_file_added', { file });
+  save();
+  box.innerHTML = '<div class="flash flash-ok">✓ '+t('msg_file_added')+'</div>';
+  document.getElementById('bv-file-input').value = '';
+  renderBotFiles(b);
+  renderBotLogs(b);
+  updateConsoleEl(b);
+}
+function runBot(){
+  const b = findBot(currentBotId); if (!b) return;
+  if (botTimers[b.id]) return;
+  b.started = true;
+  pushConsoleLine(b, '<span class="ok">'+t('console_started')+'</span>');
+  ['Initializing bot...','Loading modules...','Connecting to Telegram API...','Polling started','Bot is online ✓'].forEach(l => b.console.push('['+nowTs()+'] '+l));
+  b.logs = b.logs || [];
+  b.logs.push({ key:'log_started', params:{}, time: Date.now() });
+  const u = user();
+  addActivity(u, 'act_bot_run', { file: b.file });
+  save();
+  updateConsoleEl(b);
+  renderBotLogs(b);
+  startBotTimer(b);
+}
+function stopBot(){
+  const b = findBot(currentBotId); if (!b) return;
+  if (botTimers[b.id]){ clearInterval(botTimers[b.id]); delete botTimers[b.id]; }
+  b.started = false;
+  pushConsoleLine(b, '<span class="warn">'+t('console_stopped')+'</span>');
+  b.logs = b.logs || [];
+  b.logs.push({ key:'log_stopped', params:{}, time: Date.now() });
+  const u = user();
+  addActivity(u, 'act_bot_stop', { file: b.file });
+  save();
+  updateConsoleEl(b);
+  renderBotLogs(b);
+}
+function clearConsole(){
+  const b = findBot(currentBotId); if (!b) return;
+  if (botTimers[b.id]){ clearInterval(botTimers[b.id]); delete botTimers[b.id]; b.started = false; }
+  b.console = [];
+  b.logs = b.logs || [];
+  b.logs.push({ key:'log_cleared', params:{}, time: Date.now() });
+  save();
+  updateConsoleEl(b);
+  renderBotLogs(b);
+}
+
+/* ============================================================
+   MESSAGES (customer inbox / admin inbox + reply)
+   ============================================================ */
+let adminMsgTarget = null;
+function renderMessages(){
+  const u = user();
+  const box = document.getElementById('messages-box');
+  if (u.isAdmin){
+    const users = Object.values(state.users).filter(x => !x.isAdmin && (x.messages||[]).length);
+    if (!users.length){
+      adminMsgTarget = null;
+      box.innerHTML = '<div class="empty"><div class="ic">💬</div><p>'+t('p_admin_msgs_none')+'</p></div>';
+      return;
+    }
+    if (!adminMsgTarget || !state.users[adminMsgTarget]) adminMsgTarget = users[0].nick;
+    const convList = users.map(c => {
+      const unread = (c.messages||[]).filter(m => m.from==='user' && !m.readByAdmin).length;
+      const last = c.messages[c.messages.length-1];
+      return '<div class="conv-card'+(adminMsgTarget===c.nick?' active':'')+'" onclick="openConv(\''+esc(c.nick)+'\')"><div class="ca">'+esc(c.nick.charAt(0).toUpperCase())+'</div><div class="cb"><div class="cn">'+esc(c.nick)+'</div><div class="cl">'+esc(last? last.text : '')+'</div></div>'+(unread?'<span class="cu">'+unread+'</span>':'')+'</div>';
+    }).join('');
+    const target = state.users[adminMsgTarget];
+    let changed = false;
+    target.messages.forEach(m => { if (m.from==='user' && !m.readByAdmin){ m.readByAdmin = true; changed = true; } });
+    if (changed) save();
+    const thread = target.messages.map(m => {
+      const cls = m.from === 'user' ? 'user' : 'admin';
+      const who = m.from === 'user' ? target.nick : t('admin_lbl');
+      return '<div class="chat-msg '+cls+'">'+esc(m.text)+'<div class="meta">'+esc(who)+' · '+fmtTime(m.time)+'</div></div>';
+    }).join('');
+    box.innerHTML = '<div class="msg-layout"><div class="conv-list">'+convList+'</div><div><div class="chat-box" id="admin-chat-box">'+(thread||'<div class="empty" style="padding:20px"><p>'+t('p_messages_none')+'</p></div>')+'</div><div class="chat-input"><input class="form-control" id="admin-reply-input" data-i18n-ph="p_admin_msgs_reply_ph" onkeypress="if(event.key===\'Enter\')adminReply()"><button class="btn btn-primary" data-i18n="p_admin_msgs_reply_btn" onclick="adminReply()"></button></div></div></div>';
+    const cb = document.getElementById('admin-chat-box'); if (cb) cb.scrollTop = cb.scrollHeight;
+    if (changed) renderDrawer();
+    return;
+  }
+  const uu = userUnreadAdminCount(u);
+  const last = u.messages.length ? u.messages[u.messages.length-1] : null;
+  box.innerHTML = '<div class="conv-card" onclick="showPage(\'contact\')"><div class="ca">A</div><div class="cb"><div class="cn">'+t('p_messages_admin')+'</div><div class="cl">'+esc(last? last.text : t('chat_empty'))+'</div></div>'+(uu?'<span class="cu">'+uu+'</span>':'')+'</div>';
+}
+function openConv(nick){ adminMsgTarget = nick; renderMessages(); }
+function adminReply(){
+  const u = user();
+  if (!adminMsgTarget || !state.users[adminMsgTarget]) return;
+  const text = document.getElementById('admin-reply-input').value.trim();
+  if (!text) return;
+  const target = state.users[adminMsgTarget];
+  target.messages.push({ from:'admin', text, time: Date.now(), readByAdmin:true, readByUser:false });
+  addActivity(target, 'act_admin_reply');
+  save();
+  document.getElementById('admin-reply-input').value = '';
+  renderMessages();
+  renderDrawer();
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById('login-pass').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('reg-pass2').addEventListener('keypress', e => { if (e.key === 'Enter') doRegister(); });
+window.addEventListener('scroll', () => {
+  document.getElementById('topnav').classList.toggle('scrolled', window.scrollY > 20);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeModals(); closeDrawer(); } });
+
+applyI18n();
+if (state.current && state.users && state.users[state.current]) {
+  ensureUserFields(state.users[state.current]);
+  enterApp();
+}
+</script>
+</body>
+</html>
